@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import strip from 'renderer/lib/strip-comments';
 
-const BLOCK_LINE_GAP = 1;
+const BLOCK_LINE_GAP = 0;
 
 const DEFAULT_BLOCK = {
   comment: '',
@@ -25,9 +25,15 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
   const commentLines: number[] = [];
 
   let line = 1;
+  // TODO: Create interface
+  let previousChild: any = null;
 
   node.nodes
     .filter((child: any) => {
+      if (child.type === 'newline') {
+        return true;
+      }
+
       if (child.type === 'block') {
         if (commentLines.indexOf(child.line) === -1) {
           commentLines.push(child.line);
@@ -58,6 +64,13 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
       }
 
       switch (child.type) {
+        case 'newline':
+          if (previousChild?.type !== 'line') {
+            currentBlock.text += '\n';
+            line += 1;
+          }
+
+          break;
         case 'block':
         case 'line':
           if (child.type === 'block' && child.nodes?.length > 0) {
@@ -75,6 +88,8 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
           ) {
             currentBlock.comment += comment;
             currentBlock.previousType = 'inline';
+            child.type = 'inline'; // We make clear distinction between inline and line comments
+
             line += BLOCK_LINE_GAP;
             currentBlock.lineTo = line - 1;
             currentBlock.text += createNewLinen(BLOCK_LINE_GAP);
@@ -106,7 +121,7 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             currentBlock = { ...DEFAULT_BLOCK, lineFrom: line };
           }
 
-          currentBlock.text += `${child.value}\n`;
+          currentBlock.text += `${child.value}`;
           currentBlock.previousType = 'text';
           currentBlock.textLine = child.line;
           currentBlock.lineTo = line;
@@ -115,6 +130,8 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
           break;
         default:
       }
+
+      previousChild = child;
     });
 
   line += BLOCK_LINE_GAP;

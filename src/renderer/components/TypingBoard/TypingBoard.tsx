@@ -46,7 +46,6 @@ const HintWrapper = styled.div`
 `;
 
 const TEMP = `// This program calculates the nth Fibonacci number recursively
-
 package main // declares that this file is part of the main package, which is the entry point for the program
 
 import "fmt" // imports the "fmt" package, which provides functions for formatting and printing strings
@@ -68,6 +67,8 @@ func main() {
 `;
 
 const TEMP_STRIP = parseText(TEMP);
+
+console.log(TEMP_STRIP);
 
 const getCurrentBlockByLine = (lineNumber: number) => {
   const found = TEMP_STRIP.blocks.find((block: any) => {
