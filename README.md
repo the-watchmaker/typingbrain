@@ -3,7 +3,9 @@
 
 ## Turn your code into learning material
 ### Trace the code to learn syntax
-![2023-02-26 02 02 40](https://user-images.githubusercontent.com/4682613/221404196-226a075c-fe48-4326-99f2-b3e6017893df.gif)
+
+<img src="https://user-images.githubusercontent.com/4682613/221404196-226a075c-fe48-4326-99f2-b3e6017893df.gif" width="520px" alt="Showing how it works." />
+
 
 
 ## Starting Development
