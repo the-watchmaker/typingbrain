@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useCallback, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { ICursorPosition } from 'renderer/types';
@@ -10,6 +11,27 @@ import parseText from './parseText';
 import getCursorPosition from './getCursorPosition';
 import TypingFooter from './TypingFooter';
 import TypingBlockInfo from './TypingBlockInfo';
+
+const DEFAULT_BASIC_SETUP = {
+  lineNumbers: false,
+  highlightActiveLineGutter: false,
+  foldGutter: false,
+  dropCursor: false,
+  allowMultipleSelections: false,
+  indentOnInput: false,
+  bracketMatching: false,
+  closeBrackets: false,
+  autocompletion: false,
+  rectangularSelection: false,
+  crosshairCursor: false,
+  highlightActiveLine: false,
+  highlightSelectionMatches: false,
+  closeBracketsKeymap: false,
+  searchKeymap: false,
+  foldKeymap: false,
+  completionKeymap: false,
+  lintKeymap: false,
+};
 
 const TypingBoardWrapper = styled.div`
   width: 100%;
@@ -31,8 +53,9 @@ const TypingBoardWrapper = styled.div`
   }
 `;
 
-const HintWrapper = styled.div`
+const HintWrapper = styled.div<{ gutterWidth: number }>`
   position: absolute;
+  padding-left: ${({ gutterWidth }) => gutterWidth || 0}px;
   top: 0;
   left: 0;
   width: 100%;
@@ -58,6 +81,7 @@ func fibonacci(n int) int {
     return fibonacci(n-1) + fibonacci(n-2) // otherwise, recursively call the fibonacci function with n-1 and n-2 and return their sum
 }
 
+// main function goes here
 func main() {
     n := 10 // set the value of n to 10
     // Call the fibonacci function and print the result to the console
@@ -72,7 +96,11 @@ console.log(TEMP_STRIP);
 
 const getCurrentBlockByLine = (lineNumber: number) => {
   const found = TEMP_STRIP.blocks.find((block: any) => {
-    return block.lineFrom <= lineNumber && block.lineTo >= lineNumber;
+    return (
+      block.comment &&
+      block.lineFrom <= lineNumber &&
+      block.lineTo >= lineNumber
+    );
   });
 
   return found;
@@ -80,6 +108,7 @@ const getCurrentBlockByLine = (lineNumber: number) => {
 
 export default function TypingBoard() {
   const refs = useRef<ReactCodeMirrorRef>({});
+  const gutterRef = useRef<Element>();
 
   const [cursorPosition, setCursorPosition] = useState<ICursorPosition>({
     lineNumber: 0,
@@ -87,17 +116,37 @@ export default function TypingBoard() {
   });
 
   const [currentBlock, setCurrentBlock] = useState();
+  const [hintGutterWidth, setHintGutterWidth] = useState(0);
+
+  const editorRef = useCallback((current: any) => {
+    refs.current = current;
+
+    const GutterElem = current?.editor?.querySelector('.cm-gutters');
+
+    if (GutterElem) {
+      gutterRef.current = GutterElem;
+      setHintGutterWidth(GutterElem.clientWidth);
+    }
+  }, []);
+
+  useEffect(() => {
+    const GutterElem = gutterRef.current;
+
+    if (GutterElem && GutterElem.clientWidth !== hintGutterWidth) {
+      setHintGutterWidth(GutterElem.clientWidth);
+    }
+  }, [gutterRef.current?.clientWidth]);
 
   const handleOnCursorActivity = () => {
     if (refs.current?.view) {
       const { doc, selection } = refs.current.view.state;
       const { lineNumber, columnNumber } = getCursorPosition(doc, selection);
 
-      const block = getCurrentBlockByLine(lineNumber);
-
-      setCurrentBlock(block || {});
-
-      setCursorPosition({ lineNumber, columnNumber });
+      if (lineNumber !== cursorPosition.lineNumber) {
+        const block = getCurrentBlockByLine(lineNumber);
+        setCurrentBlock(block || {});
+        setCursorPosition({ lineNumber, columnNumber });
+      }
     }
   };
 
@@ -107,7 +156,7 @@ export default function TypingBoard() {
 
   return (
     <TypingBoardWrapper>
-      <HintWrapper>
+      <HintWrapper gutterWidth={hintGutterWidth}>
         <CodeMirror
           value={TEMP_STRIP.text}
           height="100%"
@@ -116,12 +165,14 @@ export default function TypingBoard() {
             width: '100%',
             height: '100%',
           }}
-          basicSetup={false}
+          basicSetup={{
+            ...DEFAULT_BASIC_SETUP,
+          }}
         />
       </HintWrapper>
       <CodeMirror
-        ref={refs}
-        value={''}
+        ref={editorRef}
+        value=""
         height="100%"
         theme="dark"
         style={{
@@ -129,11 +180,9 @@ export default function TypingBoard() {
           height: '100%',
         }}
         basicSetup={{
-          lineNumbers: false,
-          foldGutter: false,
+          ...DEFAULT_BASIC_SETUP,
+          lineNumbers: true,
           highlightActiveLine: true,
-          autocompletion: false,
-          closeBrackets: false,
         }}
         onClick={handleOnClick}
         extensions={[javascript({ jsx: true, typescript: true })]}
