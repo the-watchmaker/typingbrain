@@ -91,7 +91,7 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             child.type = 'inline'; // We make clear distinction between inline and line comments
 
             line += BLOCK_LINE_GAP;
-            currentBlock.lineTo = line - 1;
+            currentBlock.lineTo = line;
             currentBlock.text += createNewLinen(BLOCK_LINE_GAP);
             blocks.push(currentBlock);
             currentBlock = { ...DEFAULT_BLOCK, lineFrom: line };
@@ -103,7 +103,7 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             child.line !== currentBlock.textLine
           ) {
             line += BLOCK_LINE_GAP;
-            currentBlock.lineTo = line - 1;
+            currentBlock.lineTo = line;
             currentBlock.text += createNewLinen(BLOCK_LINE_GAP);
             blocks.push(currentBlock);
             currentBlock = { ...DEFAULT_BLOCK, comment, lineFrom: line };
@@ -115,7 +115,7 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
         case 'text':
           if (currentBlock.previousType === 'text' && child.hasInlineComment) {
             line += BLOCK_LINE_GAP;
-            currentBlock.lineTo = line - 1;
+            currentBlock.lineTo = line;
             currentBlock.text += createNewLinen(BLOCK_LINE_GAP);
             blocks.push(currentBlock);
             currentBlock = { ...DEFAULT_BLOCK, lineFrom: line };
@@ -126,7 +126,6 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
           currentBlock.textLine = child.line;
           currentBlock.lineTo = line;
 
-          line += 1;
           break;
         default:
       }
