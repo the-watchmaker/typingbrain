@@ -12,7 +12,7 @@ const DEFAULT_BLOCK = {
   lineFrom: 1,
 };
 
-function createNewLinen(n: number) {
+export const createNewLinen = (n: number) => {
   let text = '';
   for (let i = 0; i < n; i += 1) {
     text += '\n';
@@ -65,8 +65,18 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
 
       switch (child.type) {
         case 'newline':
-          if (previousChild?.type !== 'line') {
-            currentBlock.text += '\n';
+          if (previousChild?.type === 'newline') {
+            currentBlock.text += `\n`;
+            line += 1;
+          }
+
+          if (previousChild?.type === 'text') {
+            currentBlock.text += `\n`;
+            line += 1;
+          }
+
+          if (previousChild?.type === 'inline') {
+            currentBlock.text += `\n`;
             line += 1;
           }
 
@@ -90,11 +100,10 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             currentBlock.previousType = 'inline';
             child.type = 'inline'; // We make clear distinction between inline and line comments
 
-            line += BLOCK_LINE_GAP;
             currentBlock.lineTo = line;
-            currentBlock.text += createNewLinen(BLOCK_LINE_GAP);
+
             blocks.push(currentBlock);
-            currentBlock = { ...DEFAULT_BLOCK, lineFrom: line };
+            currentBlock = { ...DEFAULT_BLOCK, lineFrom: line + 1, loc: 'A' };
             break;
           }
 
@@ -102,11 +111,14 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             currentBlock.previousType === 'text' &&
             child.line !== currentBlock.textLine
           ) {
-            line += BLOCK_LINE_GAP;
             currentBlock.lineTo = line;
-            currentBlock.text += createNewLinen(BLOCK_LINE_GAP);
             blocks.push(currentBlock);
-            currentBlock = { ...DEFAULT_BLOCK, comment, lineFrom: line };
+            currentBlock = {
+              ...DEFAULT_BLOCK,
+              comment,
+              lineFrom: line,
+              loc: 'B',
+            };
             break;
           }
 
@@ -114,11 +126,9 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
           break;
         case 'text':
           if (currentBlock.previousType === 'text' && child.hasInlineComment) {
-            line += BLOCK_LINE_GAP;
-            currentBlock.lineTo = line;
-            currentBlock.text += createNewLinen(BLOCK_LINE_GAP);
+            currentBlock.lineTo = line - 1;
             blocks.push(currentBlock);
-            currentBlock = { ...DEFAULT_BLOCK, lineFrom: line };
+            currentBlock = { ...DEFAULT_BLOCK, lineFrom: line, loc: 'C' };
           }
 
           currentBlock.text += `${child.value}`;
