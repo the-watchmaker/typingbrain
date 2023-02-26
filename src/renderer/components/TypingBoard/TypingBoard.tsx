@@ -34,6 +34,7 @@ const DEFAULT_BASIC_SETUP = {
 };
 
 const TypingBoardWrapper = styled.div`
+  position: relative;
   width: 100%;
   height: calc(100% - (var(--header-height) + var(--footer-height)));
   textarea {
@@ -50,6 +51,14 @@ const TypingBoardWrapper = styled.div`
 
   .cm-editor {
     background-color: transparent !important;
+  }
+
+  .cm-theme-dark .cm-gutters {
+    background-color: transparent !important;
+    color: var(--theme-white);
+    font-size: 0.85rem;
+    line-height: 1.35rem;
+    padding: 0 0.5rem;
   }
 `;
 
@@ -118,6 +127,14 @@ export default function TypingBoard() {
   const [currentBlock, setCurrentBlock] = useState();
   const [hintGutterWidth, setHintGutterWidth] = useState(0);
 
+  const handleGutterWidth = () => {
+    const GutterElem = gutterRef.current;
+
+    if (GutterElem && GutterElem.clientWidth !== hintGutterWidth) {
+      setHintGutterWidth(GutterElem.clientWidth);
+    }
+  };
+
   const editorRef = useCallback((current: any) => {
     refs.current = current;
 
@@ -130,12 +147,8 @@ export default function TypingBoard() {
   }, []);
 
   useEffect(() => {
-    const GutterElem = gutterRef.current;
-
-    if (GutterElem && GutterElem.clientWidth !== hintGutterWidth) {
-      setHintGutterWidth(GutterElem.clientWidth);
-    }
-  }, [gutterRef.current?.clientWidth]);
+    handleGutterWidth();
+  }, [cursorPosition.lineNumber]);
 
   const handleOnCursorActivity = () => {
     if (refs.current?.view) {
@@ -147,6 +160,8 @@ export default function TypingBoard() {
         setCurrentBlock(block || {});
         setCursorPosition({ lineNumber, columnNumber });
       }
+
+      handleGutterWidth();
     }
   };
 
@@ -187,6 +202,7 @@ export default function TypingBoard() {
         onClick={handleOnClick}
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={handleOnCursorActivity}
+        onKeyUp={handleOnCursorActivity}
         onKeyDown={handleOnCursorActivity}
       />
 
