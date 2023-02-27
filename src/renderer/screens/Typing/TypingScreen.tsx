@@ -9,7 +9,7 @@ export default function TypingScreen() {
   return (
     <Screen>
       <Column>
-        <Row>
+        <Row height="calc(100% - 26px)">
           <Column width="270px">
             <FileNav />
           </Column>

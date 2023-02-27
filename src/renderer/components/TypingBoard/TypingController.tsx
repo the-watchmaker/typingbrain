@@ -28,7 +28,7 @@ func main() {
 
 const TypingControllerWrapper = styled.div`
   width: 100%;
-  height: 38px;
+  height: 100%;
   padding: 3px 8px;
   display: flex;
   align-items: center;

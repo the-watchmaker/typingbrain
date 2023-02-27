@@ -158,7 +158,9 @@ export default function TypingBoard() {
 
   return (
     <TypingBoardWrapper>
-      <TypingController />
+      <Row height="38px">
+        <TypingController />
+      </Row>
       {mode === 'play' && (
         <Row>
           <Column width="72%">
@@ -204,26 +206,28 @@ export default function TypingBoard() {
         </Row>
       )}
       {mode === 'edit' && (
-        <CodeMirror
-          ref={editorRef}
-          value={editingText}
-          height="100%"
-          theme="dark"
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          basicSetup={{
-            ...DEFAULT_BASIC_SETUP,
-            lineNumbers: true,
-            highlightActiveLine: true,
-          }}
-          onClick={handleOnClick}
-          extensions={[javascript({ jsx: true, typescript: true })]}
-          onChange={(text: string) => {
-            setEditingText(text);
-          }}
-        />
+        <Row height="calc(100% - 38px)">
+          <CodeMirror
+            ref={editorRef}
+            value={editingText}
+            height="100%"
+            theme="dark"
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+            basicSetup={{
+              ...DEFAULT_BASIC_SETUP,
+              lineNumbers: true,
+              highlightActiveLine: true,
+            }}
+            onClick={handleOnClick}
+            extensions={[javascript({ jsx: true, typescript: true })]}
+            onChange={(text: string) => {
+              setEditingText(text);
+            }}
+          />
+        </Row>
       )}
     </TypingBoardWrapper>
   );
