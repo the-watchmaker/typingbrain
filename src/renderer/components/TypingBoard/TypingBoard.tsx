@@ -2,14 +2,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { ICursorPosition } from 'renderer/types';
-
+import useEditorColLn from 'renderer/hooks/states/useEditorColLn';
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import parseText from './parseText';
 
 import getCursorPosition from './getCursorPosition';
-import TypingFooter from './TypingFooter';
 import TypingBlockInfo from './TypingBlockInfo';
 
 const DEFAULT_BASIC_SETUP = {
@@ -36,7 +34,7 @@ const DEFAULT_BASIC_SETUP = {
 const TypingBoardWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: calc(100% - (var(--header-height) + var(--footer-height)));
+  height: 100%;
   textarea {
     width: 68%;
     height: 100%;
@@ -101,8 +99,6 @@ func main() {
 
 const TEMP_STRIP = parseText(TEMP);
 
-console.log(TEMP_STRIP);
-
 const getCurrentBlockByLine = (lineNumber: number) => {
   const found = TEMP_STRIP.blocks.find((block: any) => {
     return (
@@ -118,11 +114,7 @@ const getCurrentBlockByLine = (lineNumber: number) => {
 export default function TypingBoard() {
   const refs = useRef<ReactCodeMirrorRef>({});
   const gutterRef = useRef<Element>();
-
-  const [cursorPosition, setCursorPosition] = useState<ICursorPosition>({
-    lineNumber: 0,
-    columnNumber: 0,
-  });
+  const { cursorPosition, setColLn } = useEditorColLn();
 
   const [currentBlock, setCurrentBlock] = useState();
   const [hintGutterWidth, setHintGutterWidth] = useState(0);
@@ -155,10 +147,11 @@ export default function TypingBoard() {
       const { doc, selection } = refs.current.view.state;
       const { lineNumber, columnNumber } = getCursorPosition(doc, selection);
 
+      setColLn({ lineNumber, columnNumber });
+
       if (lineNumber !== cursorPosition.lineNumber) {
         const block = getCurrentBlockByLine(lineNumber);
         setCurrentBlock(block || {});
-        setCursorPosition({ lineNumber, columnNumber });
       }
 
       handleGutterWidth();
@@ -208,7 +201,7 @@ export default function TypingBoard() {
 
       {currentBlock && <TypingBlockInfo currentBlock={currentBlock} />}
 
-      <TypingFooter cursorPosition={cursorPosition} />
+
     </TypingBoardWrapper>
   );
 }
