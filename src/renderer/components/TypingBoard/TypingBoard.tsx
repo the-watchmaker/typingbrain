@@ -2,13 +2,15 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
-import useEditorColLn from 'renderer/hooks/states/useEditorColLn';
+import useEditor from 'renderer/hooks/states/useEditor';
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import parseText from './parseText';
+import Row from 'renderer/components/ui/Row';
+import Column from 'renderer/components/ui/Column';
 
 import getCursorPosition from './getCursorPosition';
 import TypingBlockInfo from './TypingBlockInfo';
+import TypingController from './TypingController';
 
 const DEFAULT_BASIC_SETUP = {
   lineNumbers: false,
@@ -62,9 +64,9 @@ const TypingBoardWrapper = styled.div`
 
 const HintWrapper = styled.div<{ gutterWidth: number }>`
   position: absolute;
-  padding-left: ${({ gutterWidth }) => gutterWidth || 0}px;
   top: 0;
   left: 0;
+  padding-left: ${({ gutterWidth }) => gutterWidth || 0}px;
   width: 100%;
   height: 100%;
   opacity: 0.45;
@@ -75,49 +77,33 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
   }
 `;
 
-const TEMP = `// This program calculates the nth Fibonacci number recursively
-package main // declares that this file is part of the main package, which is the entry point for the program
-
-import "fmt" // imports the "fmt" package, which provides functions for formatting and printing strings
-
-// The fibonacci function recursively calculates the nth Fibonacci number
-func fibonacci(n int) int {
-    if n <= 1 { // if n is less than or equal to 1
-        return n // return n
-    }
-    return fibonacci(n-1) + fibonacci(n-2) // otherwise, recursively call the fibonacci function with n-1 and n-2 and return their sum
-}
-
-// main function goes here
-func main() {
-    n := 10 // set the value of n to 10
-    // Call the fibonacci function and print the result to the console
-    // The %d and %s are placeholders for the values of n and fibonacci(n), respectively
-    fmt.Printf("The %dth Fibonacci number is %d", n, fibonacci(n))
-}
-`;
-
-const TEMP_STRIP = parseText(TEMP);
-
-const getCurrentBlockByLine = (lineNumber: number) => {
-  const found = TEMP_STRIP.blocks.find((block: any) => {
-    return (
-      block.comment &&
-      block.lineFrom <= lineNumber &&
-      block.lineTo >= lineNumber
-    );
-  });
-
-  return found;
-};
-
 export default function TypingBoard() {
   const refs = useRef<ReactCodeMirrorRef>({});
   const gutterRef = useRef<Element>();
-  const { cursorPosition, setColLn } = useEditorColLn();
+  const {
+    lineNumber,
+    setColLn,
+    processedText,
+    blocks,
+    mode,
+    setEditingText,
+    editingText,
+  } = useEditor();
 
   const [currentBlock, setCurrentBlock] = useState();
   const [hintGutterWidth, setHintGutterWidth] = useState(0);
+
+  const getCurrentBlockByLine = (lineNum: number) => {
+    if (!blocks) {
+      return null;
+    }
+    const found = blocks.find((block: any) => {
+      return (
+        block.comment && block.lineFrom <= lineNum && block.lineTo >= lineNum
+      );
+    });
+    return found;
+  };
 
   const handleGutterWidth = () => {
     const GutterElem = gutterRef.current;
@@ -140,17 +126,25 @@ export default function TypingBoard() {
 
   useEffect(() => {
     handleGutterWidth();
-  }, [cursorPosition.lineNumber]);
+  }, [lineNumber]);
+
+  useEffect(() => {
+    const block = getCurrentBlockByLine(1);
+    setCurrentBlock(block || {});
+  }, []);
 
   const handleOnCursorActivity = () => {
     if (refs.current?.view) {
       const { doc, selection } = refs.current.view.state;
-      const { lineNumber, columnNumber } = getCursorPosition(doc, selection);
+      const { lineNumber: lineNum, columnNumber: colNum } = getCursorPosition(
+        doc,
+        selection
+      );
 
-      setColLn({ lineNumber, columnNumber });
+      setColLn({ lineNumber: lineNum, columnNumber: colNum });
 
-      if (lineNumber !== cursorPosition.lineNumber) {
-        const block = getCurrentBlockByLine(lineNumber);
+      if (lineNum !== lineNumber) {
+        const block = getCurrentBlockByLine(lineNum);
         setCurrentBlock(block || {});
       }
 
@@ -164,9 +158,55 @@ export default function TypingBoard() {
 
   return (
     <TypingBoardWrapper>
-      <HintWrapper gutterWidth={hintGutterWidth}>
+      <TypingController />
+      {mode === 'play' && (
+        <Row>
+          <Column width="72%">
+            <HintWrapper gutterWidth={hintGutterWidth}>
+              <CodeMirror
+                value={processedText}
+                height="100%"
+                theme="dark"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                }}
+                basicSetup={{
+                  ...DEFAULT_BASIC_SETUP,
+                }}
+              />
+            </HintWrapper>
+            <CodeMirror
+              ref={editorRef}
+              value=""
+              height="100%"
+              theme="dark"
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+              basicSetup={{
+                ...DEFAULT_BASIC_SETUP,
+                lineNumbers: true,
+                highlightActiveLine: true,
+              }}
+              onClick={handleOnClick}
+              extensions={[javascript({ jsx: true, typescript: true })]}
+              onChange={handleOnCursorActivity}
+            />
+          </Column>
+
+          {currentBlock && (
+            <Column width="28%">
+              <TypingBlockInfo currentBlock={currentBlock} />
+            </Column>
+          )}
+        </Row>
+      )}
+      {mode === 'edit' && (
         <CodeMirror
-          value={TEMP_STRIP.text}
+          ref={editorRef}
+          value={editingText}
           height="100%"
           theme="dark"
           style={{
@@ -175,33 +215,16 @@ export default function TypingBoard() {
           }}
           basicSetup={{
             ...DEFAULT_BASIC_SETUP,
+            lineNumbers: true,
+            highlightActiveLine: true,
+          }}
+          onClick={handleOnClick}
+          extensions={[javascript({ jsx: true, typescript: true })]}
+          onChange={(text: string) => {
+            setEditingText(text);
           }}
         />
-      </HintWrapper>
-      <CodeMirror
-        ref={editorRef}
-        value=""
-        height="100%"
-        theme="dark"
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-        basicSetup={{
-          ...DEFAULT_BASIC_SETUP,
-          lineNumbers: true,
-          highlightActiveLine: true,
-        }}
-        onClick={handleOnClick}
-        extensions={[javascript({ jsx: true, typescript: true })]}
-        onChange={handleOnCursorActivity}
-        onKeyUp={handleOnCursorActivity}
-        onKeyDown={handleOnCursorActivity}
-      />
-
-      {currentBlock && <TypingBlockInfo currentBlock={currentBlock} />}
-
-
+      )}
     </TypingBoardWrapper>
   );
 }
