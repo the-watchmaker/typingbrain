@@ -1,6 +1,10 @@
 .default-theme {
   --theme-bg: #14181E;
-  --theme-bg-light: #212227;
+  --theme-bg-dark: rgb(18, 21, 23);
+  --theme-bg-light: rgb(26, 32, 38);
+  --theme-bg-lighter: rgb(32, 39, 47);
   --theme-color: #fff;
   --theme-blue: #4b8dff;
+  --theme-blue-dark: #447ad6;
+  --theme-blue-darker: #2f67c7;
 }
