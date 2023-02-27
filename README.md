@@ -5,7 +5,9 @@
 
 ### Trace the code to learn syntax
 
-<img src="https://user-images.githubusercontent.com/4682613/221404196-226a075c-fe48-4326-99f2-b3e6017893df.gif" width="520px" alt="Showing how it works." />
+<img src="https://user-images.githubusercontent.com/4682613/221533597-eb79871b-158c-4d74-b571-1e4f7c9e6347.gif" width="520px" alt="Showing how it works." />
+
+Copy and paste code snippet and paste on it and then start tracing!
 
 
 ### ChatGPT integration
