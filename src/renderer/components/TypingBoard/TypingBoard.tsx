@@ -151,11 +151,6 @@ export default function TypingBoard() {
       handleGutterWidth();
     }
   };
-
-  const handleOnClick = () => {
-    handleOnCursorActivity();
-  };
-
   return (
     <TypingBoardWrapper>
       <Row height="38px">
@@ -192,9 +187,10 @@ export default function TypingBoard() {
                 lineNumbers: true,
                 highlightActiveLine: true,
               }}
-              onClick={handleOnClick}
+              onClick={handleOnCursorActivity}
               extensions={[javascript({ jsx: true, typescript: true })]}
               onChange={handleOnCursorActivity}
+              onKeyDown={handleOnCursorActivity}
             />
           </Column>
 
@@ -221,11 +217,13 @@ export default function TypingBoard() {
               lineNumbers: true,
               highlightActiveLine: true,
             }}
-            onClick={handleOnClick}
+            onClick={handleOnCursorActivity}
             extensions={[javascript({ jsx: true, typescript: true })]}
             onChange={(text: string) => {
+              handleOnCursorActivity();
               setEditingText(text);
             }}
+            onKeyDown={handleOnCursorActivity}
           />
         </Row>
       )}
