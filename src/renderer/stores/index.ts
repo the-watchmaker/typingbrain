@@ -1,3 +1,4 @@
+import { IPractice } from 'main/models/models';
 import { Dispatch, createContext } from 'react';
 
 export interface IUIState {
@@ -10,12 +11,14 @@ export interface IUIState {
     columnNumber: number;
     showLineNumbers: boolean;
     showGutter: boolean;
+    // values
+    editingText: string;
+    processedText?: string;
+    blocks?: any[];
+    mode: 'edit' | 'play' | 'view';
   };
   fileList: [] | null;
-  currentFile: {
-    id: string;
-    name: string;
-  } | null;
+  currentFile: IPractice | null;
 }
 
 export const DEFAULT_STATE = {
@@ -28,6 +31,8 @@ export const DEFAULT_STATE = {
     columnNumber: 1,
     showLineNumbers: true,
     showGutter: true,
+    mode: 'edit' as 'edit' | 'play' | 'view',
+    editingText: '',
   },
   fileList: null,
   flleListMounted: false,
@@ -47,6 +52,40 @@ export const reducer = (state: any, action: any) => {
           ...state.editor,
           lineNumber: action.payload.lineNumber,
           columnNumber: action.payload.columnNumber,
+        },
+      };
+    case 'updateEditorText':
+      return {
+        ...state,
+        editor: {
+          ...state.editor,
+          processedText: action.payload.processedText,
+          blocks: action.payload.blocks,
+        },
+      };
+    case 'updateEditorEditingText':
+      return {
+        ...state,
+        editor: {
+          ...state.editor,
+          editingText: action.payload.editingText,
+        },
+      };
+    case 'updateEditorMode':
+      return {
+        ...state,
+        editor: {
+          ...state.editor,
+          mode: action.payload.mode,
+        },
+      };
+    case 'updateEditorPlayData':
+      return {
+        ...state,
+        editor: {
+          ...state.editor,
+          processedText: action.payload.processedText,
+          blocks: action.payload.blocks,
         },
       };
     default:
