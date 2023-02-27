@@ -1,22 +1,24 @@
 import styled from 'styled-components';
-import useEditorColLn from 'renderer/hooks/states/useEditorColLn';
+import useEditor from 'renderer/hooks/states/useEditor';
 
 const TypingFooterWrapper = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
   background-color: var(--theme-blue);
-  font-size: 0.85rem;
-  padding: 3px 10px;
+  font-size: 0.8rem;
+  padding: 0px 18px;
+  align-items: center;
+  display: flex;
 `;
 
 export default function TypingFooter() {
-  const { cursorPosition } = useEditorColLn();
+  const { lineNumber, columnNumber } = useEditor();
 
   return (
     <TypingFooterWrapper>
       <div>
-        Ln {cursorPosition.lineNumber}, Col {cursorPosition.columnNumber}
+        Ln {lineNumber}, Col {columnNumber}
       </div>
     </TypingFooterWrapper>
   );
