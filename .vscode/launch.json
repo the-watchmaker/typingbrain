@@ -1,8 +1,8 @@
 {
-  "version": "0.2.0",
+  "version": "0.0.9",
   "configurations": [
     {
-      "name": "Electron: Main",
+      "name": "TypingBrain: Main",
       "type": "node",
       "request": "launch",
       "protocol": "inspector",
@@ -13,7 +13,7 @@
       }
     },
     {
-      "name": "Electron: Renderer",
+      "name": "TypingBrain: Renderer",
       "type": "chrome",
       "request": "attach",
       "port": 9223,
@@ -23,8 +23,8 @@
   ],
   "compounds": [
     {
-      "name": "Electron: All",
-      "configurations": ["Electron: Main", "Electron: Renderer"]
+      "name": "TypingBrain: All",
+      "configurations": ["TypingBrain: Main", "TypingBrain: Renderer"]
     }
   ]
 }
