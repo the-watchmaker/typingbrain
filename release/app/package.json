@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "typingbrain",
+  "version": "0.0.9",
+  "description": "Use typing and tracing method to memorize and learn!",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Ryan Lee",
+    "email": "askryanlee@gmail.com",
+    "url": "https://github.com/the-watchmaker"
   },
   "main": "./dist/main/main.js",
   "scripts": {
@@ -14,5 +14,8 @@
     "postinstall": "npm run rebuild && npm run link-modules",
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/better-sqlite3": "^7.6.3",
+    "better-sqlite3": "^8.1.0"
+  }
 }
