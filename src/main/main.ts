@@ -14,6 +14,10 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import createDb from './models/db';
+
+const db = createDb(app);
+
 
 class AppUpdater {
   constructor() {
