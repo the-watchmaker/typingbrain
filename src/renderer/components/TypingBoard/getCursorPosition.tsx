@@ -6,7 +6,7 @@ export default function getCursorPosition(
 ) {
   const lineNumber = doc.lineAt(selection.main.head).number;
   const columnNumber =
-    selection.ranges[0].head - doc.lineAt(selection.main.head).from;
+    selection.ranges[0].head - doc.lineAt(selection.main.head).from + 1;
 
   return { lineNumber, columnNumber };
 }
