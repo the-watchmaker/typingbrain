@@ -209,7 +209,12 @@ export default function TypingBoard() {
       {mode === 'play' && (
         <EditorWrapper>
           <Row height="100%">
-            <Column width="72%">
+            {currentBlock && (
+              <Column width="25%">
+                <TypingBlockInfo currentBlock={currentBlock} />
+              </Column>
+            )}
+            <Column width="75%">
               <ScrollWrapper>
                 <HintWrapper gutterWidth={hintGutterWidth}>
                   <CodeMirror
@@ -248,12 +253,6 @@ export default function TypingBoard() {
                 </HintWrapper>
               </ScrollWrapper>
             </Column>
-
-            {currentBlock && (
-              <Column width="28%">
-                <TypingBlockInfo currentBlock={currentBlock} />
-              </Column>
-            )}
           </Row>
         </EditorWrapper>
       )}
