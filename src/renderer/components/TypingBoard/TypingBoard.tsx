@@ -7,9 +7,12 @@ import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import Row from 'renderer/components/ui/Row';
 import Column from 'renderer/components/ui/Column';
+import usePractice from 'renderer/hooks/states/usePractice';
 
 import getCursorPosition from './getCursorPosition';
 import TypingBlockInfo from './TypingBlockInfo';
+
+const EDITOR_UPDATE_DELAY_MS = 500;
 
 const DEFAULT_BASIC_SETUP = {
   lineNumbers: false,
@@ -130,9 +133,12 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
   }
 `;
 
+// We use this to save the timeout instance for the editor update
+// TODO find the exact type for this
+let editorTimeoutInstance: any;
+
 export default function TypingBoard() {
-  const refs = useRef<ReactCodeMirrorRef>({});
-  const gutterRef = useRef<Element>();
+
   const {
     lineNumber,
     setColLn,
@@ -142,6 +148,11 @@ export default function TypingBoard() {
     setEditingText,
     editingText,
   } = useEditor();
+
+  const { savePractice } = usePractice();
+
+  const refs = useRef<ReactCodeMirrorRef>({});
+  const gutterRef = useRef<Element>();
 
   const [currentBlock, setCurrentBlock] = useState();
   const [hintGutterWidth, setHintGutterWidth] = useState(0);
@@ -204,6 +215,19 @@ export default function TypingBoard() {
       handleGutterWidth();
     }
   };
+
+  const handleEditorChange = (text: string) => {
+    handleOnCursorActivity();
+    setEditingText(text);
+    if (editorTimeoutInstance) {
+      clearTimeout(editorTimeoutInstance);
+    }
+
+    editorTimeoutInstance = setTimeout(() => {
+      savePractice();
+    }, EDITOR_UPDATE_DELAY_MS);
+  };
+
   return (
     <TypingBoardWrapper>
       {mode === 'play' && (
@@ -273,10 +297,7 @@ export default function TypingBoard() {
               }}
               onClick={handleOnCursorActivity}
               extensions={[javascript({ jsx: true, typescript: true })]}
-              onChange={(text: string) => {
-                handleOnCursorActivity();
-                setEditingText(text);
-              }}
+              onChange={handleEditorChange}
               onKeyDown={handleOnCursorActivity}
             />
           </ScrollWrapper>

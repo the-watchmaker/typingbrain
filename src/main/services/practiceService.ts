@@ -42,12 +42,12 @@ class PracticeService {
   }
 
   async listPractice(opts: ISearchOpts) {
-    const practices = this.dbList?.all(opts);
+    const practices = await this.dbList?.all(opts);
     return practices;
   }
 
   async readPractice(id: number) {
-    const practice = this.dbRead?.get(id);
+    const practice = await this.dbRead?.get(id);
     return practice;
   }
 
@@ -75,9 +75,12 @@ class PracticeService {
       updatedAt: new Date().toISOString(),
     };
 
-    const practiceId = await this.dbUpdate?.run(newPractice);
+    await this.dbUpdate?.run(newPractice);
+    const updatePractice = await this.dbRead?.get(newPractice.id);
 
-    return practiceId;
+    return {
+      ...updatePractice,
+    };
   }
 
   async deletePractice(id: number) {

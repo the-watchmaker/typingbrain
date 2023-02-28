@@ -43,7 +43,7 @@ export default function TypingController() {
     useEditor();
   const {
     updateCurrentPractice,
-    savePractice,
+    createPractice,
     deleteCurrentPractice,
     currentPractice,
   } = usePractice();
@@ -74,7 +74,7 @@ export default function TypingController() {
   };
 
   const handleSave = () => {
-    savePractice();
+    createPractice();
   };
 
   return (
@@ -91,7 +91,7 @@ export default function TypingController() {
         )}
       </Row>
       {mode === 'edit' && editingText && (
-        <Button onClick={handlePlay}>Play</Button>
+        <Button onClick={handlePlay}>Practice</Button>
       )}
       {mode === 'play' && <Button onClick={handleEdit}>Done</Button>}
     </TypingControllerWrapper>

@@ -8,6 +8,11 @@ import {
 } from 'renderer/controllers/ipc/practiceIpc';
 import { globalContext } from 'renderer/stores';
 
+export const extractPracticeTitle = (text: string) => {
+  const title = text.split('\n')[0] || 'Untitled';
+  return title;
+};
+
 export default function useEditorText() {
   const { state, dispatch } = useContext(globalContext);
 
@@ -32,7 +37,43 @@ export default function useEditorText() {
   };
 
   const savePractice = () => {
-    const title = (state.editor.editingText || '').split('\n')[0] || 'Untitled';
+    const title = extractPracticeTitle(state.editor.editingText);
+
+    if (state.currentPractice?.id) {
+      updatePracticeIpc(
+        {
+          id: state.currentPractice.id,
+          title,
+          text: state.editor.editingText,
+          tags: '',
+          language: '',
+          metaData: '',
+        },
+        (args: IPractice) => {
+          updateCurrentPractice(args);
+
+          // TODO refactor
+          const newPracticeList = state.practiceList?.map((practice) => {
+            if (practice.id === state.currentPractice?.id) {
+              practice.title = title;
+              practice.text = state.editor.editingText;
+            }
+            return practice;
+          });
+
+          dispatch({
+            type: 'updatePracticeList',
+            payload: {
+              practiceList: newPracticeList,
+            },
+          });
+        }
+      );
+    }
+  };
+
+  const createPractice = () => {
+    const title = extractPracticeTitle(state.editor.editingText);
 
     if (!state.currentPractice?.id) {
       createPracticeIpc(
@@ -44,20 +85,6 @@ export default function useEditorText() {
         },
         (createdPractice: IPractice) => {
           updateCurrentPractice(createdPractice);
-          getPracticeList();
-        }
-      );
-    } else {
-      updatePracticeIpc(
-        {
-          id: state.currentPractice.id,
-          title,
-          text: state.editor.editingText,
-          tags: '',
-          language: '',
-          metaData: '',
-        },
-        () => {
           getPracticeList();
         }
       );
@@ -81,6 +108,7 @@ export default function useEditorText() {
     getPracticeList,
     updateCurrentPractice,
     deleteCurrentPractice,
+    createPractice,
     savePractice,
   };
 }
