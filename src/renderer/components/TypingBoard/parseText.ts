@@ -18,7 +18,7 @@ export const createNewLinen = (n: number) => {
     text += '\n';
   }
   return text;
-}
+};
 
 function walk(node: any, currentBlock: any, inBlock: boolean = false) {
   const blocks: any[] = [];
@@ -101,9 +101,13 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             child.type = 'inline'; // We make clear distinction between inline and line comments
 
             currentBlock.lineTo = line;
-
+            currentBlock.endedAt = 'A';
             blocks.push(currentBlock);
-            currentBlock = { ...DEFAULT_BLOCK, lineFrom: line + 1, loc: 'A' };
+            currentBlock = {
+              ...DEFAULT_BLOCK,
+              lineFrom: line + 1,
+              createdAt: 'A',
+            };
             break;
           }
 
@@ -111,13 +115,14 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             currentBlock.previousType === 'text' &&
             child.line !== currentBlock.textLine
           ) {
-            currentBlock.lineTo = line;
+            currentBlock.lineTo = line - 1;
+            currentBlock.endedAt = 'B';
             blocks.push(currentBlock);
             currentBlock = {
               ...DEFAULT_BLOCK,
               comment,
               lineFrom: line,
-              loc: 'B',
+              createdAt: 'B',
             };
             break;
           }
@@ -127,8 +132,9 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
         case 'text':
           if (currentBlock.previousType === 'text' && child.hasInlineComment) {
             currentBlock.lineTo = line - 1;
+            currentBlock.endedAt = 'C';
             blocks.push(currentBlock);
-            currentBlock = { ...DEFAULT_BLOCK, lineFrom: line, loc: 'C' };
+            currentBlock = { ...DEFAULT_BLOCK, lineFrom: line, createdAt: 'C' };
           }
 
           currentBlock.text += `${child.value}`;

@@ -10,7 +10,6 @@ import Column from 'renderer/components/ui/Column';
 
 import getCursorPosition from './getCursorPosition';
 import TypingBlockInfo from './TypingBlockInfo';
-import TypingController from './TypingController';
 
 const DEFAULT_BASIC_SETUP = {
   lineNumbers: false,
@@ -131,7 +130,7 @@ export default function TypingBoard() {
   useEffect(() => {
     const block = getCurrentBlockByLine(1);
     setCurrentBlock(block || {});
-  }, []);
+  }, [blocks]);
 
   const handleOnCursorActivity = () => {
     if (refs.current?.view) {
@@ -153,9 +152,6 @@ export default function TypingBoard() {
   };
   return (
     <TypingBoardWrapper>
-      <Row height="38px">
-        <TypingController />
-      </Row>
       {mode === 'play' && (
         <Row>
           <Column width="72%">
@@ -202,7 +198,7 @@ export default function TypingBoard() {
         </Row>
       )}
       {mode === 'edit' && (
-        <Row height="calc(100% - 38px)">
+        <Row height="100%">
           <CodeMirror
             ref={editorRef}
             value={editingText}
