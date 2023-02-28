@@ -5,15 +5,27 @@ import SideNav from 'renderer/components/SideNav/SideNav';
 import usePractice from 'renderer/hooks/states/usePractice';
 import useEditor from 'renderer/hooks/states/useEditor';
 
-const PracticeItem = styled.div`
+const PracticeNav = styled.div`
+  padding: 10px 10px 70vh 10px;
+`;
+
+const PracticeItem = styled.div<{ selected: boolean }>`
   font-size: 0.85rem;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 15px 15px;
+  padding: 10px 7px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  border-radius: 3px;
+  background-color: ${(props) =>
+    props.selected ? 'var(--theme-item-bg-selected)' : 'var(--theme-item-bg)'};
+  &:hover {
+    background-color: var(--theme-item-bg-hover);
+  }
 `;
 
 export default function FileNav() {
   const {
     practiceList = [],
+    currentPractice,
     getPracticeList,
     updateCurrentPractice,
   } = usePractice();
@@ -31,20 +43,22 @@ export default function FileNav() {
 
   return (
     <SideNav>
-      <div>FileNav</div>
-      {practiceList?.map((practice: IPractice) => {
-        return (
-          <PracticeItem
-            key={practice.id}
-            onClick={() => {
-              handleSelectPractice(practice);
-              setEditingText(practice.text);
-            }}
-          >
-            {practice.id}: {practice.title}
-          </PracticeItem>
-        );
-      })}
+      <PracticeNav>
+        {practiceList?.map((practice: IPractice) => {
+          return (
+            <PracticeItem
+              key={practice.id}
+              onClick={() => {
+                handleSelectPractice(practice);
+                setEditingText(practice.text);
+              }}
+              selected={practice.id === currentPractice?.id}
+            >
+              {practice.id}: {practice.title}
+            </PracticeItem>
+          );
+        })}
+      </PracticeNav>
     </SideNav>
   );
 }
