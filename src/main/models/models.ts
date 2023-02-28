@@ -1,13 +1,17 @@
+export type TCreatedOrigin = 'APP' | 'WEB' | 'MOB';
+
 export interface IPractice {
-  id: number;
+  id?: number;
   title: string;
-  author_id: number;
+  authorId?: number;
   text: string;
   tags: string;
-  language: string;
-  meta_data: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string;
-  deleted: boolean;
+  folderId?: number;
+  createdOrigin?: string;
+  language?: string;
+  metaData?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
+  deleted?: number;
 }
