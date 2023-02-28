@@ -49,15 +49,27 @@ const TypingBoardWrapper = styled.div`
   }
 
   .cm-editor {
+    width: 100%;
     background-color: transparent !important;
+
+    .cm-content {
+      white-space: pre-wrap;
+      width: calc(100% - 52px);
+    }
+
+    .cm-scroller {
+      overflow-x: hidden;
+    }
   }
 
   .cm-theme-dark .cm-gutters {
     background-color: transparent !important;
     color: var(--theme-white);
     font-size: 0.85rem;
-    line-height: 1.35rem;
+    line-height: 1.38rem;
     padding: 0 0.5rem;
+    min-width: 50px;
+    float: left;
   }
 `;
 
