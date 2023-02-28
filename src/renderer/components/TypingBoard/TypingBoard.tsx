@@ -34,63 +34,81 @@ const DEFAULT_BASIC_SETUP = {
 
 const TypingBoardWrapper = styled.div`
   position: relative;
+  height: 100%;
+`;
+
+const ScrollWrapper = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
-  textarea {
-    width: 68%;
-    height: 100%;
-    border: none;
-    background-color: transparent;
-    color: var(--theme-color);
-    outline: none;
-    border: none;
-    resize: none;
-    font-size: 1.25rem;
-  }
+  overflow-y: scroll;
+`;
 
-  .cm-editor {
-    width: 100%;
-    background-color: transparent !important;
+const EditorWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
 
-    .cm-content {
-      white-space: pre-wrap;
-      width: calc(100% - 52px);
-    }
+  .cm-theme-dark {
+    .cm-editor {
+      width: 100%;
+      padding-bottom: calc(100vh - 100px);
+      background-color: transparent !important;
 
-    .cm-scroller {
-      overflow-x: hidden;
-    }
+      .cm-content {
+        white-space: pre-wrap;
+        width: calc(100% - 52px);
+      }
 
-    .cm-line:first-of-type {
-      font-size: 1.5rem;
-      padding-top: 5px;
-      padding-bottom: 5px;
-      font-weight: 200 !important;
-      color: var(--theme-white) !important;
-      * {
+      .cm-scroller {
+        overflow-x: hidden;
+      }
+
+      .cm-line:first-of-type {
+        font-size: 1.5rem;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-weight: 200 !important;
         color: var(--theme-white) !important;
+        * {
+          color: var(--theme-white) !important;
+        }
       }
     }
-  }
 
-  .cm-theme-dark .cm-gutters {
-    background-color: transparent !important;
-    color: var(--theme-white);
-    font-size: 0.85rem;
-    line-height: 1.38rem;
-    padding: 0 0.5rem;
-    min-width: 50px;
-    float: left;
+    .cm-gutters {
+      background-color: transparent !important;
+      color: var(--theme-white);
+      font-size: 0.85rem;
+      line-height: 1.38rem;
+      padding: 0 0.5rem;
+      min-width: 50px;
+      float: left;
+    }
+  }
+`;
+
+const AnswerWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  .cm-editor {
+    .cm-line {
+      opacity: 1 !important;
+    }
   }
 `;
 
 const HintWrapper = styled.div<{ gutterWidth: number }>`
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   padding-left: ${({ gutterWidth }) => gutterWidth || 0}px;
   width: 100%;
-  height: 100%;
+  height: auto;
   color: var(--theme-blue);
 
   .cm-editor {
@@ -189,30 +207,65 @@ export default function TypingBoard() {
   return (
     <TypingBoardWrapper>
       {mode === 'play' && (
-        <Row>
-          <Column width="72%">
-            <HintWrapper gutterWidth={hintGutterWidth}>
-              <CodeMirror
-                value={processedText}
-                height="100%"
-                theme="dark"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                }}
-                basicSetup={{
-                  ...DEFAULT_BASIC_SETUP,
-                }}
-              />
-            </HintWrapper>
+        <EditorWrapper>
+          <Row height="100%">
+            <Column width="72%">
+              <ScrollWrapper>
+                <HintWrapper gutterWidth={hintGutterWidth}>
+                  <CodeMirror
+                    value={processedText}
+                    height="100%"
+                    theme="dark"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                    basicSetup={{
+                      ...DEFAULT_BASIC_SETUP,
+                    }}
+                  />
+                  <AnswerWrapper>
+                    <CodeMirror
+                      ref={editorRef}
+                      value=""
+                      height="100%"
+                      theme="dark"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                      }}
+                      basicSetup={{
+                        ...DEFAULT_BASIC_SETUP,
+                        lineNumbers: true,
+                        highlightActiveLine: true,
+                      }}
+                      onClick={handleOnCursorActivity}
+                      extensions={[javascript({ jsx: true, typescript: true })]}
+                      onChange={handleOnCursorActivity}
+                      onKeyDown={handleOnCursorActivity}
+                    />
+                  </AnswerWrapper>
+                </HintWrapper>
+              </ScrollWrapper>
+            </Column>
+
+            {currentBlock && (
+              <Column width="28%">
+                <TypingBlockInfo currentBlock={currentBlock} />
+              </Column>
+            )}
+          </Row>
+        </EditorWrapper>
+      )}
+      {mode === 'edit' && (
+        <EditorWrapper>
+          <ScrollWrapper>
             <CodeMirror
               ref={editorRef}
-              value=""
-              height="100%"
+              value={editingText}
               theme="dark"
               style={{
                 width: '100%',
-                height: '100%',
               }}
               basicSetup={{
                 ...DEFAULT_BASIC_SETUP,
@@ -221,43 +274,14 @@ export default function TypingBoard() {
               }}
               onClick={handleOnCursorActivity}
               extensions={[javascript({ jsx: true, typescript: true })]}
-              onChange={handleOnCursorActivity}
+              onChange={(text: string) => {
+                handleOnCursorActivity();
+                setEditingText(text);
+              }}
               onKeyDown={handleOnCursorActivity}
             />
-          </Column>
-
-          {currentBlock && (
-            <Column width="28%">
-              <TypingBlockInfo currentBlock={currentBlock} />
-            </Column>
-          )}
-        </Row>
-      )}
-      {mode === 'edit' && (
-        <Row height="100%">
-          <CodeMirror
-            ref={editorRef}
-            value={editingText}
-            height="100%"
-            theme="dark"
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            basicSetup={{
-              ...DEFAULT_BASIC_SETUP,
-              lineNumbers: true,
-              highlightActiveLine: true,
-            }}
-            onClick={handleOnCursorActivity}
-            extensions={[javascript({ jsx: true, typescript: true })]}
-            onChange={(text: string) => {
-              handleOnCursorActivity();
-              setEditingText(text);
-            }}
-            onKeyDown={handleOnCursorActivity}
-          />
-        </Row>
+          </ScrollWrapper>
+        </EditorWrapper>
       )}
     </TypingBoardWrapper>
   );

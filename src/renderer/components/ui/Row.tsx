@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const Row = styled.div<{ height?: string }>`
-  position: relative;
   display: flex;
   width: 100%;
   height: ${(props) => props.height || '100%'};
