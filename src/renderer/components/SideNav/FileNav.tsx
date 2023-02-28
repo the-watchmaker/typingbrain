@@ -14,7 +14,7 @@ const PracticeItem = styled.div<{ selected: boolean }>`
   padding: 10px 7px;
   cursor: pointer;
   margin-bottom: 5px;
-  border-radius: 3px;
+  border-radius: 3.5px;
   background-color: ${(props) =>
     props.selected ? 'var(--theme-item-bg-selected)' : 'var(--theme-item-bg)'};
   &:hover {
@@ -26,8 +26,8 @@ export default function FileNav() {
   const {
     practiceList = [],
     currentPractice,
+    getPractice,
     getPracticeList,
-    updateCurrentPractice,
   } = usePractice();
 
   const { setEditingText } = useEditor();
@@ -38,7 +38,9 @@ export default function FileNav() {
   }, []);
 
   const handleSelectPractice = (practice: IPractice) => {
-    updateCurrentPractice(practice);
+    getPractice(practice.id as number, (projectRetrieved: IPractice) => {
+      setEditingText(projectRetrieved.text);
+    });
   };
 
   return (
@@ -50,7 +52,6 @@ export default function FileNav() {
               key={practice.id}
               onClick={() => {
                 handleSelectPractice(practice);
-                setEditingText(practice.text);
               }}
               selected={practice.id === currentPractice?.id}
             >

@@ -1,5 +1,7 @@
 import { IPractice } from 'main/models/models';
 import { Database, Statement } from 'better-sqlite3';
+import { snakeFieldToCamel } from '../utils/caseConverter';
+
 import db from '../models/db';
 
 interface ISearchOpts {
@@ -35,7 +37,7 @@ class PracticeService {
     );
 
     this.dbList = this.db.prepare(
-      `SELECT * FROM practice WHERE deleted <> 1 LIMIT @limit;`
+      `SELECT title, id, tags FROM practice WHERE deleted <> 1 LIMIT @limit;`
     );
 
     this.dbDelete = this.db.prepare(`DELETE FROM practice WHERE id = (@id);`);
@@ -46,9 +48,9 @@ class PracticeService {
     return practices;
   }
 
-  async readPractice(id: number) {
-    const practice = await this.dbRead?.get(id);
-    return practice;
+  async readPractice(opts: any) {
+    const practice = await this.dbRead?.get(opts.id);
+    return snakeFieldToCamel(practice as IPractice);
   }
 
   async createPractice(practice: IPractice) {
@@ -69,17 +71,20 @@ class PracticeService {
   }
 
   async updatePractice(practice: IPractice) {
+    const updatedAt = new Date().toISOString();
+
+    console.log(practice);
+
     const newPractice = {
       // TODO make the fields explicit
       ...practice,
-      updatedAt: new Date().toISOString(),
+      updatedAt,
     };
 
     await this.dbUpdate?.run(newPractice);
-    const updatePractice = await this.dbRead?.get(newPractice.id);
 
     return {
-      ...updatePractice,
+      ...newPractice,
     };
   }
 

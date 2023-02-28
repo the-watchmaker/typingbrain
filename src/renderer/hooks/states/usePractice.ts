@@ -1,6 +1,7 @@
 import { IPractice } from 'main/models/models';
 import { useContext } from 'react';
 import {
+  getPracticeIpc,
   getPracticeListIpc,
   createPracticeIpc,
   updatePracticeIpc,
@@ -36,29 +37,42 @@ export default function useEditorText() {
     });
   };
 
-  const savePractice = () => {
-    const title = extractPracticeTitle(state.editor.editingText);
+  const getPractice = (id: number, cb?: Function) => {
+    getPracticeIpc(id, (practice: IPractice) => {
+      updateCurrentPractice(practice);
+
+      if (cb) {
+        cb(practice);
+      }
+    });
+  };
+
+  const savePractice = (practice: any) => {
+    const title = extractPracticeTitle(practice.text);
 
     if (state.currentPractice?.id) {
       updatePracticeIpc(
         {
-          id: state.currentPractice.id,
+          ...state.currentPractice,
+          ...practice,
           title,
-          text: state.editor.editingText,
-          tags: '',
-          language: '',
-          metaData: '',
         },
-        (args: IPractice) => {
-          updateCurrentPractice(args);
+        (updatePractice: IPractice) => {
+          updateCurrentPractice({
+            ...state.currentPractice,
+            ...updatePractice,
+            // TODO: metaData and Tags
+            metaData: '',
+            tags: '',
+          });
 
           // TODO refactor
-          const newPracticeList = state.practiceList?.map((practice) => {
-            if (practice.id === state.currentPractice?.id) {
-              practice.title = title;
-              practice.text = state.editor.editingText;
+          const newPracticeList = state.practiceList?.map((thisPractice) => {
+            if (thisPractice.id === state.currentPractice?.id) {
+              thisPractice.title = title;
+              thisPractice.text = state.editor.editingText;
             }
-            return practice;
+            return thisPractice;
           });
 
           dispatch({
@@ -80,6 +94,8 @@ export default function useEditorText() {
         {
           title,
           text: state.editor.editingText,
+          metaData: '',
+          authorId: 0,
           tags: '',
           language: '',
         },
@@ -105,6 +121,7 @@ export default function useEditorText() {
   return {
     currentPractice: state.currentPractice,
     practiceList: state.practiceList,
+    getPractice,
     getPracticeList,
     updateCurrentPractice,
     deleteCurrentPractice,

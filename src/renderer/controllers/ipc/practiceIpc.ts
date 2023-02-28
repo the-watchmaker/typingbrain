@@ -31,9 +31,9 @@ export const updatePracticeIpc = (practice: IPractice, cb: Function) => {
 
   window.api.once('practice:update', (arg) => {
     // eslint-disable-next-line no-console
-    console.log('practice:update', arg);
     if (arg) {
-      cb(JSON.parse(arg as string));
+      const updatedPractice: IPractice = JSON.parse(arg as string);
+      cb(updatedPractice);
     }
   });
 };
@@ -56,6 +56,24 @@ export const getPracticeListIpc = (opts: any, cb: Function) => {
     }
 
     cb(projects);
+  });
+};
+
+export const getPracticeIpc = (id: number, cb: Function) => {
+  window.api.sendMessage('practice:read', [
+    {
+      id,
+    },
+  ]);
+
+  window.api.once('practice:read', (arg) => {
+    let project = {};
+
+    if (typeof arg === 'string') {
+      project = JSON.parse(arg);
+    }
+
+    cb(project);
   });
 };
 

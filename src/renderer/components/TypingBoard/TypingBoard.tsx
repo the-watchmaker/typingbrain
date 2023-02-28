@@ -68,9 +68,8 @@ const EditorWrapper = styled.div`
       }
 
       .cm-line:first-of-type {
-        font-size: 1.5rem;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        font-size: 1.85rem;
+        margin-bottom: 0.85rem;
         font-weight: 200 !important;
         color: var(--theme-white) !important;
         * {
@@ -122,8 +121,6 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
     .cm-line:first-of-type {
       opacity: 1;
       font-size: 1.5rem;
-      padding-top: 5px;
-      padding-bottom: 5px;
       font-weight: 200 !important;
       color: var(--theme-white) !important;
       * {
@@ -138,7 +135,6 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
 let editorTimeoutInstance: any;
 
 export default function TypingBoard() {
-
   const {
     lineNumber,
     setColLn,
@@ -217,14 +213,15 @@ export default function TypingBoard() {
   };
 
   const handleEditorChange = (text: string) => {
-    handleOnCursorActivity();
     setEditingText(text);
+    handleOnCursorActivity();
+
     if (editorTimeoutInstance) {
       clearTimeout(editorTimeoutInstance);
     }
 
     editorTimeoutInstance = setTimeout(() => {
-      savePractice();
+      savePractice({ text });
     }, EDITOR_UPDATE_DELAY_MS);
   };
 
