@@ -13,6 +13,7 @@ export interface IUIState {
     columnNumber: number;
     showLineNumbers: boolean;
     showGutter: boolean;
+    lastInteracted: number;
     // values
     editingText: string;
     processedText?: string;
@@ -35,6 +36,7 @@ export const DEFAULT_STATE = {
     showGutter: true,
     mode: 'edit' as TMode,
     editingText: '',
+    lastInteracted: 0,
   },
   practiceList: [],
   currentPractice: null,
@@ -46,6 +48,14 @@ export const initialState: IUIState = {
 
 export const reducer = (state: any, action: any) => {
   switch (action.type) {
+    case 'updateEditorLastInteracted':
+      return {
+        ...state,
+        editor: {
+          ...state.editor,
+          lastInteracted: action.payload.lastInteracted,
+        },
+      };
     case 'updateEditorColLn':
       return {
         ...state,

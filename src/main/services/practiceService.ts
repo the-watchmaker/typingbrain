@@ -73,8 +73,6 @@ class PracticeService {
   async updatePractice(practice: IPractice) {
     const updatedAt = new Date().toISOString();
 
-    console.log(practice);
-
     const newPractice = {
       // TODO make the fields explicit
       ...practice,

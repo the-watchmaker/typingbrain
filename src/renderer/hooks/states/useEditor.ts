@@ -6,6 +6,14 @@ export default function useEditorText() {
 
   return {
     ...state.editor,
+    updateLastInteracted: () => {
+      dispatch({
+        type: 'updateEditorLastInteracted',
+        payload: {
+          lastInteracted: new Date().getTime(),
+        },
+      });
+    },
     updateOriginalText: ({
       processedText,
       blocks,

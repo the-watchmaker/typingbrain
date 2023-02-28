@@ -143,6 +143,7 @@ export default function TypingBoard() {
     mode,
     setEditingText,
     editingText,
+    updateLastInteracted,
   } = useEditor();
 
   const { savePractice } = usePractice();
@@ -194,6 +195,8 @@ export default function TypingBoard() {
   }, [blocks]);
 
   const handleOnCursorActivity = () => {
+    updateLastInteracted();
+
     if (refs.current?.view) {
       const { doc, selection } = refs.current.view.state;
       const { lineNumber: lineNum, columnNumber: colNum } = getCursorPosition(
