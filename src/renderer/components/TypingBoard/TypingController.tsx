@@ -67,9 +67,9 @@ export default function TypingController() {
 
   return (
     <TypingControllerWrapper>
-      <Button onClick={handleNewPractice}>New</Button>
+      {mode === 'edit' && <Button onClick={handleNewPractice}>New</Button>}
       {mode === 'edit' && <Button onClick={handleSavePractice}>Save</Button>}
-      {mode !== 'edit' && <Button onClick={handleEditPractice}>Edit</Button>}
+      {mode === 'play' && <Button onClick={handleEditPractice}>Done</Button>}
       {mode !== 'play' && <Button onClick={handlePlayPractice}>Play</Button>}
     </TypingControllerWrapper>
   );
