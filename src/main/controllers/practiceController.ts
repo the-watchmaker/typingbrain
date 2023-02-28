@@ -10,9 +10,9 @@ export default function practiceController() {
       const runResult = await practiceService.createPractice(body[0]);
 
       if (runResult?.changes) {
-        const practice = await practiceService.readPractice(
-          runResult?.lastInsertRowid as number
-        );
+        const practice = await practiceService.readPractice({
+          id: runResult?.lastInsertRowid as number,
+        });
         event.reply('practice:create', JSON.stringify(practice));
       }
     } catch (e) {

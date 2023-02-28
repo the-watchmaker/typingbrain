@@ -173,7 +173,7 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "TypingBrain",
+    "productName": "Typing Brain",
     "appId": "org.erb.TypingBrain",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
