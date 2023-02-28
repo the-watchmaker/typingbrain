@@ -21,8 +21,8 @@ class PracticeService {
     this.db = db;
 
     this.dbCreate = this.db.prepare(`INSERT INTO practice
-    (title, author_id, "text", deleted, created_at, updated_at, tags, "language", meta_data)
-      VALUES(@title, @authorId, @text, @deleted, @createdAt, @updatedAt, @tags, @language, @metaData);`);
+    (title, author_id, "text", deleted, created_at, updated_at, tags, "language", meta_data, created_origin)
+      VALUES(@title, @authorId, @text, @deleted, @createdAt, @updatedAt, @tags, @language, @metaData, @createdOrigin);`);
 
     this.dbRead = this.db.prepare(`SELECT * FROM practice WHERE id = ?;`);
 
@@ -51,6 +51,7 @@ class PracticeService {
     const newPractice = {
       // TODO make the fields explicit
       ...practice,
+      createdOrigin: 'APP',
       metaData: JSON.stringify(practice.metaData),
       authorId: 0, // TODO add authorID
       deleted: 0,
