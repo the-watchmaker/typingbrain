@@ -16,7 +16,7 @@ Step 4. Hit "Practice" button and start typing the code while reading the note f
 Step 5. Keep practicing
 
 
-<img src="https://user-images.githubusercontent.com/4682613/221533597-eb79871b-158c-4d74-b571-1e4f7c9e6347.gif" width="650px" alt="Showing how it works." />
+<img src="https://user-images.githubusercontent.com/4682613/221981222-6f3e0f8e-d606-4abc-bde4-f87534bd428a.gif" width="650px" alt="Showing how it works." />
 
 Copy and paste code snippet and paste on it and then start tracing!
 
