@@ -60,6 +60,17 @@ const TypingBoardWrapper = styled.div`
     .cm-scroller {
       overflow-x: hidden;
     }
+
+    .cm-line:first-of-type {
+      font-size: 1.5rem;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      font-weight: 200 !important;
+      color: var(--theme-white) !important;
+      * {
+        color: var(--theme-white) !important;
+      }
+    }
   }
 
   .cm-theme-dark .cm-gutters {
@@ -80,11 +91,24 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
   padding-left: ${({ gutterWidth }) => gutterWidth || 0}px;
   width: 100%;
   height: 100%;
-  opacity: 0.45;
   color: var(--theme-blue);
 
   .cm-editor {
-    color: var(--theme-blue);
+    .cm-line {
+      opacity: 0.45;
+      color: var(--theme-blue);
+    }
+    .cm-line:first-of-type {
+      opacity: 1;
+      font-size: 1.5rem;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      font-weight: 200 !important;
+      color: var(--theme-white) !important;
+      * {
+        color: var(--theme-white) !important;
+      }
+    }
   }
 `;
 
