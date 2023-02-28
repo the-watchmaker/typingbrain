@@ -46,4 +46,13 @@ export default function practiceController() {
       throw e;
     }
   });
+
+  ipcMain.on('practice:delete', async (event, body) => {
+    try {
+      const practiceList = await practiceService.deletePractice(body[0]);
+      event.reply('practice:delete', JSON.stringify(practiceList));
+    } catch (e) {
+      throw e;
+    }
+  });
 }

@@ -58,3 +58,15 @@ export const getPracticeListIpc = (opts: any, cb: Function) => {
     cb(projects);
   });
 };
+
+export const deletePracticeIpc = (id: number, cb: Function) => {
+  window.api.sendMessage('practice:delete', [
+    {
+      id,
+    },
+  ]);
+
+  window.api.once('practice:delete', (arg) => {
+    cb(arg);
+  });
+};

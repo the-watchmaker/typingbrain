@@ -17,6 +17,8 @@ class PracticeService {
 
   private dbList: Statement | undefined;
 
+  private dbDelete: Statement | undefined;
+
   constructor() {
     this.db = db;
 
@@ -35,6 +37,8 @@ class PracticeService {
     this.dbList = this.db.prepare(
       `SELECT * FROM practice WHERE deleted <> 1 LIMIT @limit;`
     );
+
+    this.dbDelete = this.db.prepare(`DELETE FROM practice WHERE id = (@id);`);
   }
 
   async listPractice(opts: ISearchOpts) {
@@ -72,6 +76,12 @@ class PracticeService {
     };
 
     const practiceId = await this.dbUpdate?.run(newPractice);
+
+    return practiceId;
+  }
+
+  async deletePractice(id: number) {
+    const practiceId = await this.dbDelete?.run(id);
 
     return practiceId;
   }
