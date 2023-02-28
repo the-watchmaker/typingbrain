@@ -69,7 +69,7 @@ const EditorWrapper = styled.div`
 
       .cm-line:first-of-type {
         font-size: 1.85rem;
-        margin-bottom: 0.85rem;
+        padding-bottom: 0.85rem;
         font-weight: 200 !important;
         color: var(--theme-white) !important;
         * {
@@ -228,6 +228,10 @@ export default function TypingBoard() {
     }, EDITOR_UPDATE_DELAY_MS);
   };
 
+  const handleAnswerChange = () => {
+    handleOnCursorActivity();
+  };
+
   return (
     <TypingBoardWrapper>
       {mode === 'play' && (
@@ -268,9 +272,10 @@ export default function TypingBoard() {
                         lineNumbers: true,
                         highlightActiveLine: true,
                       }}
+                      state
                       onClick={handleOnCursorActivity}
                       extensions={[javascript({ jsx: true, typescript: true })]}
-                      onChange={handleOnCursorActivity}
+                      onChange={handleAnswerChange}
                       onKeyDown={handleOnCursorActivity}
                     />
                   </AnswerWrapper>
