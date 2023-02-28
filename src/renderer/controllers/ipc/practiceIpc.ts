@@ -43,7 +43,8 @@ export const getPracticeListIpc = (opts: any, cb: Function) => {
   // TODO validate practice
   window.api.sendMessage('practice:list', [
     {
-      limit: 10,
+      // TODO make it dynamic
+      limit: 100,
     },
   ]);
 
