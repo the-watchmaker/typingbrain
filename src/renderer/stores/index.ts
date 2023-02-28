@@ -1,6 +1,8 @@
 import { IPractice } from 'main/models/models';
 import { Dispatch, createContext } from 'react';
 
+export type TMode = 'edit' | 'play' | 'view';
+
 export interface IUIState {
   editor: {
     fontSize: number;
@@ -15,10 +17,10 @@ export interface IUIState {
     editingText: string;
     processedText?: string;
     blocks?: any[];
-    mode: 'edit' | 'play' | 'view';
+    mode: TMode;
   };
-  fileList: [] | null;
-  currentFile: IPractice | null;
+  practiceList: IPractice[] | null;
+  currentPractice: IPractice | null;
 }
 
 export const DEFAULT_STATE = {
@@ -31,12 +33,11 @@ export const DEFAULT_STATE = {
     columnNumber: 1,
     showLineNumbers: true,
     showGutter: true,
-    mode: 'edit' as 'edit' | 'play' | 'view',
+    mode: 'edit' as TMode,
     editingText: '',
   },
-  fileList: null,
-  flleListMounted: false,
-  currentFile: null,
+  practiceList: [],
+  currentPractice: null,
 };
 
 export const initialState: IUIState = {
@@ -87,6 +88,16 @@ export const reducer = (state: any, action: any) => {
           processedText: action.payload.processedText,
           blocks: action.payload.blocks,
         },
+      };
+    case 'updatePracticeList':
+      return {
+        ...state,
+        practiceList: action.payload.practiceList,
+      };
+    case 'updateCurrentPractice':
+      return {
+        ...state,
+        currentPractice: action.payload.currentPractice,
       };
     default:
   }
