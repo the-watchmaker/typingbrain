@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import Button from 'renderer/components/ui/Button';
 import useEditor from 'renderer/hooks/states/useEditor';
+import usePractice from 'renderer/hooks/states/usePractice';
+
 import parseText from './parseText';
 
 /*
@@ -37,9 +39,11 @@ const TypingControllerWrapper = styled.div`
 `;
 
 export default function TypingController() {
-  const { mode, editingText, setPlayData, setMode } = useEditor();
+  const { mode, editingText, setPlayData, setMode, setEditingText } =
+    useEditor();
+  const { updateCurrentPractice, savePractice } = usePractice();
 
-  const handleOnClickPlay = () => {
+  const handlePlayPractice = () => {
     if (editingText) {
       const { text, blocks } = parseText(editingText);
       setPlayData({ processedText: text, blocks });
@@ -47,14 +51,26 @@ export default function TypingController() {
     }
   };
 
-  const handleOnClickEdit = () => {
+  const handleEditPractice = () => {
     setMode('edit');
+  };
+
+  const handleNewPractice = () => {
+    setMode('edit');
+    setEditingText('');
+    updateCurrentPractice(null);
+  };
+
+  const handleSavePractice = () => {
+    savePractice();
   };
 
   return (
     <TypingControllerWrapper>
-      {mode !== 'edit' && <Button onClick={handleOnClickEdit}>Edit</Button>}
-      {mode !== 'play' && <Button onClick={handleOnClickPlay}>Play</Button>}
+      <Button onClick={handleNewPractice}>New</Button>
+      {mode === 'edit' && <Button onClick={handleSavePractice}>Save</Button>}
+      {mode !== 'edit' && <Button onClick={handleEditPractice}>Edit</Button>}
+      {mode !== 'play' && <Button onClick={handlePlayPractice}>Play</Button>}
     </TypingControllerWrapper>
   );
 }
