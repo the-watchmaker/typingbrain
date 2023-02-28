@@ -2,6 +2,7 @@ import React from 'react';
 import './styles/App.css';
 import './styles/variables.scss';
 import './styles/fonts.scss';
+import './styles/scrollbar.scss';
 
 export default function Theme({
   mode,
