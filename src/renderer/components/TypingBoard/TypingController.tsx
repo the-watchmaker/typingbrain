@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Button from 'renderer/components/ui/Button';
 import useEditor from 'renderer/hooks/states/useEditor';
 import usePractice from 'renderer/hooks/states/usePractice';
-
+import Row from 'renderer/components/ui/Row';
 import parseText from './parseText';
 
 /*
@@ -41,9 +41,14 @@ const TypingControllerWrapper = styled.div`
 export default function TypingController() {
   const { mode, editingText, setPlayData, setMode, setEditingText } =
     useEditor();
-  const { updateCurrentPractice, savePractice } = usePractice();
+  const {
+    updateCurrentPractice,
+    savePractice,
+    deleteCurrentPractice,
+    currentPractice,
+  } = usePractice();
 
-  const handlePlayPractice = () => {
+  const handlePlay = () => {
     if (editingText) {
       const { text, blocks } = parseText(editingText);
       setPlayData({ processedText: text, blocks });
@@ -51,26 +56,44 @@ export default function TypingController() {
     }
   };
 
-  const handleEditPractice = () => {
+  const handleEdit = () => {
     setMode('edit');
   };
 
-  const handleNewPractice = () => {
+  const handleNew = () => {
     setMode('edit');
     setEditingText('');
     updateCurrentPractice(null);
   };
 
-  const handleSavePractice = () => {
+  const handleDelete = () => {
+    deleteCurrentPractice(() => {
+      setEditingText('');
+      updateCurrentPractice(null);
+    });
+  };
+
+  const handleSave = () => {
     savePractice();
   };
 
   return (
     <TypingControllerWrapper>
-      {mode === 'edit' && <Button onClick={handleNewPractice}>New</Button>}
-      {mode === 'edit' && <Button onClick={handleSavePractice}>Save</Button>}
-      {mode === 'play' && <Button onClick={handleEditPractice}>Done</Button>}
-      {mode !== 'play' && <Button onClick={handlePlayPractice}>Play</Button>}
+      <Row>
+        {mode === 'edit' && currentPractice?.id && (
+          <Button onClick={handleNew}>New</Button>
+        )}
+        {mode === 'edit' && !currentPractice?.id && (
+          <Button onClick={handleSave}>Create</Button>
+        )}
+        {mode === 'edit' && currentPractice?.id && (
+          <Button onClick={handleDelete}>Delete</Button>
+        )}
+      </Row>
+      {mode === 'edit' && editingText && (
+        <Button onClick={handlePlay}>Play</Button>
+      )}
+      {mode === 'play' && <Button onClick={handleEdit}>Done</Button>}
     </TypingControllerWrapper>
   );
 }
