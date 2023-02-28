@@ -5,8 +5,11 @@ import Row from 'renderer/components/ui/Row';
 import Column from 'renderer/components/ui/Column';
 import TypingFooter from 'renderer/components/TypingFooter/TypingFooter';
 import TypingController from 'renderer/components/TypingBoard/TypingController';
+import useEditor from 'renderer/hooks/states/useEditor';
 
 export default function TypingScreen() {
+  const { mode } = useEditor();
+
   return (
     <Screen>
       <Column>
@@ -14,10 +17,12 @@ export default function TypingScreen() {
           <TypingController />
         </Row>
         <Row height="calc(100% - 26px - 38px)">
-          <Column width="270px">
-            <FileNav />
-          </Column>
-          <Column width="calc(100% - 270px)">
+          {mode === 'edit' && (
+            <Column width="270px">
+              <FileNav />
+            </Column>
+          )}
+          <Column width={mode === 'edit' ? 'calc(100% - 270px)' : '100%'}>
             <TypingBoard />
           </Column>
         </Row>
