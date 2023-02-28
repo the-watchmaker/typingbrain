@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { globalContext } from 'renderer/stores';
+import { globalContext, TMode } from 'renderer/stores';
 
 export default function useEditorText() {
   const { state, dispatch } = useContext(globalContext);
@@ -45,7 +45,7 @@ export default function useEditorText() {
         },
       });
     },
-    setMode: (mode: 'edit' | 'play' | 'view') => {
+    setMode: (mode: TMode) => {
       dispatch({
         type: 'updateEditorMode',
         payload: {
