@@ -3,30 +3,12 @@ import Button from 'renderer/components/ui/Button';
 import useEditor from 'renderer/hooks/states/useEditor';
 import usePractice from 'renderer/hooks/states/usePractice';
 import Row from 'renderer/components/ui/Row';
+import ColumnBetween from 'renderer/components/ui/ColumnBetween';
+import { MdOutlineAdd, MdOutlineSave } from 'react-icons/md';
+import { BsTrash, BsPlayFill } from 'react-icons/bs';
+import IconButton from '../ui/IconButton';
+
 import parseText from './parseText';
-
-/*
-// This program calculates the nth Fibonacci number recursively
-package main // declares that this file is part of the main package, which is the entry point for the program
-
-import "fmt" // imports the "fmt" package, which provides functions for formatting and printing strings
-
-// The fibonacci function recursively calculates the nth Fibonacci number
-func fibonacci(n int) int {
-    if n <= 1 { // if n is less than or equal to 1
-        return n // return n
-    }
-    return fibonacci(n-1) + fibonacci(n-2) // otherwise, recursively call the fibonacci function with n-1 and n-2 and return their sum
-}
-
-// main function goes here
-func main() {
-    n := 10 // set the value of n to 10
-    // Call the fibonacci function and print the result to the console
-    // The %d and %s are placeholders for the values of n and fibonacci(n), respectively
-    fmt.Printf("The %dth Fibonacci number is %d", n, fibonacci(n))
-}
-*/
 
 const TypingControllerWrapper = styled.div`
   width: 100%;
@@ -80,18 +62,31 @@ export default function TypingController() {
   return (
     <TypingControllerWrapper>
       <Row>
-        {mode === 'edit' && currentPractice?.id && (
-          <Button onClick={handleNew}>New</Button>
-        )}
-        {mode === 'edit' && !currentPractice?.id && (
-          <Button onClick={handleSave}>Create</Button>
-        )}
-        {mode === 'edit' && currentPractice?.id && (
-          <Button onClick={handleDelete}>Delete</Button>
-        )}
+        <ColumnBetween width="260px">
+          {mode === 'edit' && currentPractice?.id && (
+            <IconButton onClick={handleNew}>
+              <MdOutlineAdd />
+            </IconButton>
+          )}
+          {mode === 'edit' && !currentPractice?.id && (
+            <IconButton onClick={handleSave}>
+              <MdOutlineSave />
+            </IconButton>
+          )}
+          {mode === 'edit' && currentPractice?.id && (
+            <IconButton onClick={handleDelete} fontSize="1rem">
+              <BsTrash />
+            </IconButton>
+          )}
+        </ColumnBetween>
       </Row>
       {mode === 'edit' && editingText && (
-        <Button onClick={handlePlay}>Practice</Button>
+        <Button onClick={handlePlay}>
+          Start{'  '}
+          <span style={{ fontSize: '1rem', lineHeight: '0.25rem' }}>
+            <BsPlayFill />
+          </span>
+        </Button>
       )}
       {mode === 'play' && <Button onClick={handleEdit}>Done</Button>}
     </TypingControllerWrapper>
