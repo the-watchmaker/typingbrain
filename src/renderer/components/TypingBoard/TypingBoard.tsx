@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import useEditor from 'renderer/hooks/states/useEditor';
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
+import { EditorSelection } from '@codemirror/state';
 import { javascript } from '@codemirror/lang-javascript';
 import Row from 'renderer/components/ui/Row';
 import Column from 'renderer/components/ui/Column';
@@ -190,9 +191,9 @@ export default function TypingBoard() {
   }, [lineNumber]);
 
   useEffect(() => {
-    const block = getCurrentBlockByLine(1);
+    const block = getCurrentBlockByLine(2);
     setCurrentBlock(block || {});
-  }, [blocks]);
+  }, [blocks, mode]);
 
   const handleOnCursorActivity = () => {
     updateLastInteracted();
@@ -259,8 +260,10 @@ export default function TypingBoard() {
                   />
                   <AnswerWrapper>
                     <CodeMirror
+                      autoFocus
+                      selection={EditorSelection.cursor(1)}
                       ref={editorRef}
-                      value=""
+                      value={'\n'}
                       height="100%"
                       theme="dark"
                       style={{
@@ -272,7 +275,6 @@ export default function TypingBoard() {
                         lineNumbers: true,
                         highlightActiveLine: true,
                       }}
-                      state
                       onClick={handleOnCursorActivity}
                       extensions={[javascript({ jsx: true, typescript: true })]}
                       onChange={handleAnswerChange}

@@ -8,9 +8,10 @@ const TypingBlockWrapper = styled.div`
   top: 0;
   right: 0;
   background-color: var(--theme-bg-dark);
-  font-size: 1rem;
+  font-size: 0.85rem;
   padding: 21px;
   white-space: pre-line;
+  word-break: break-word;
   font-family: 'inter', monospace;
 `;
 
