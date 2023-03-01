@@ -16,7 +16,7 @@ const PracticeItem = styled.div<{ selected: boolean }>`
   margin-bottom: 5px;
   border-radius: 3.5px;
   background-color: ${(props) =>
-    props.selected ? 'var(--theme-item-bg-selected)' : 'var(--theme-item-bg)'};
+    props.selected ? 'var(--theme-item-bg-selected)' : 'transparent'};
   &:hover {
     background-color: var(--theme-item-bg-hover);
   }
@@ -55,7 +55,7 @@ export default function FileNav() {
               }}
               selected={practice.id === currentPractice?.id}
             >
-              {practice.id}: {practice.title}
+              {practice.title}
             </PracticeItem>
           );
         })}

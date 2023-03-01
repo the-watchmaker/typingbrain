@@ -6,7 +6,7 @@ const SideNavWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: var(--theme-bg-lighter);
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export default SideNavWrapper;
