@@ -20,24 +20,17 @@ Step 5. Keep practicing
 
 Copy and paste code snippet and paste on it and then start tracing!
 
+### Practice code examples
+[Go by Examples](https://github.com/mmcgrana/gobyexample/tree/master/examples)
 
-### ChatGPT integration
+
+### ChatGPT integration (Coming soon)
+### Github integration (Coming soon)
 
 
-## Starting Development
+### To run and develop
 
-Start the app in the `dev` environment:
+Please visit: [Electron React Boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate)
 
-```bash
-npm start
-```
-
-## Packaging for Production
-
-To package apps for the local platform:
-
-```bash
-npm run package
-```
 
 
