@@ -44,7 +44,12 @@ export default function TypingFooter() {
   return (
     <TypingFooterWrapper>
       <div>
-        {currentPractice?.title} | Ln {lineNumber}, Col {columnNumber}
+        {currentPractice?.id && (
+          <span>
+            {currentPractice?.title}(ID: {currentPractice?.id}) |
+          </span>
+        )}{' '}
+        Ln {lineNumber}, Col {columnNumber}
       </div>
       <div>{mode === 'edit' && <span>{lastUpdated}</span>}</div>
     </TypingFooterWrapper>
