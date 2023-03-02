@@ -168,9 +168,14 @@ function getHiddenSelections(block: any, pos: number) {
   commentLines.forEach((line: string) => {
     if (line.indexOf('@hide') === 0) {
       const text = line.replace('@hide', '').trim();
-      const start = block.text.indexOf(text) + pos;
-      const end = start + text.length;
-      hiddenSelection.push({ start, end, text });
+      const found = block.text.indexOf(text);
+
+      if (found > -1) {
+        const start = found + pos;
+        const end = start + text.length;
+        hiddenSelection.push({ start, end, text });
+        console.log(pos, line, text, block.text, block.text.indexOf(text));
+      }
     }
   });
 
