@@ -33,15 +33,18 @@ export default function useEditorText() {
     setColLn: ({
       lineNumber,
       columnNumber,
+      positionNumber,
     }: {
       lineNumber: number;
       columnNumber: number;
+      positionNumber: number;
     }) => {
       dispatch({
         type: 'updateEditorColLn',
         payload: {
           lineNumber,
           columnNumber,
+          positionNumber,
         },
       });
     },

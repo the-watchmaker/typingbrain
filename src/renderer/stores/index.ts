@@ -11,6 +11,7 @@ export interface IUIState {
     theme: string;
     lineNumber: number;
     columnNumber: number;
+    positionNumber: number;
     showLineNumbers: boolean;
     showGutter: boolean;
     lastInteracted: number;
@@ -32,6 +33,7 @@ export const DEFAULT_STATE = {
     theme: 'monokai',
     lineNumber: 1,
     columnNumber: 1,
+    positionNumber: 0,
     showLineNumbers: true,
     showGutter: true,
     mode: 'edit' as TMode,
@@ -63,6 +65,7 @@ export const reducer = (state: any, action: any) => {
           ...state.editor,
           lineNumber: action.payload.lineNumber,
           columnNumber: action.payload.columnNumber,
+          positionNumber: action.payload.positionNumber,
         },
       };
     case 'updateEditorText':

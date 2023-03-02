@@ -18,7 +18,8 @@ const TypingFooterWrapper = styled.div`
 `;
 
 export default function TypingFooter() {
-  const { lineNumber, columnNumber, lastInteracted, mode } = useEditor();
+  const { lineNumber, columnNumber, positionNumber, lastInteracted, mode } =
+    useEditor();
   const { currentPractice } = usePractice();
 
   const lastUpdated = useMemo(() => {
@@ -49,7 +50,7 @@ export default function TypingFooter() {
             {currentPractice?.title}(ID: {currentPractice?.id}) |
           </span>
         )}{' '}
-        Ln {lineNumber}, Col {columnNumber}
+        Ln {lineNumber}, Col {columnNumber}, Pos {positionNumber}
       </div>
       <div>{mode === 'edit' && <span>{lastUpdated}</span>}</div>
     </TypingFooterWrapper>
