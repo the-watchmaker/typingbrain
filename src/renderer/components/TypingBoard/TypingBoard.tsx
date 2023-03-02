@@ -102,6 +102,9 @@ const AnswerWrapper = styled.div`
     .cm-line {
       opacity: 1 !important;
     }
+    .cm-layer.cm-selectionLayer {
+      z-index: -2 !important;
+    }
   }
 `;
 
@@ -155,7 +158,7 @@ export default function TypingBoard() {
     updateLastInteracted,
   } = useEditor();
 
-  const { savePractice, currentPractice } = usePractice();
+  const { savePractice } = usePractice();
 
   const refs = useRef<ReactCodeMirrorRef>({});
   const hintRefs = useRef<ReactCodeMirrorRef>({});
