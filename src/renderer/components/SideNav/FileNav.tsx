@@ -18,7 +18,10 @@ const PracticeItem = styled.div<{ selected: boolean }>`
   background-color: ${(props) =>
     props.selected ? 'var(--theme-item-bg-selected)' : 'transparent'};
   &:hover {
-    background-color: var(--theme-item-bg-hover);
+    background-color: ${(props) =>
+      props.selected
+        ? 'var(--theme-item-bg-selected-hover)'
+        : 'var(--theme-item-bg-hover)'};
   }
 `;
 
