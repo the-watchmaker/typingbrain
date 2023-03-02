@@ -2,12 +2,13 @@ import styled from 'styled-components';
 import Button from 'renderer/components/ui/Button';
 import useEditor from 'renderer/hooks/states/useEditor';
 import usePractice from 'renderer/hooks/states/usePractice';
-import Row from 'renderer/components/ui/Row';
 import ColumnBetween from 'renderer/components/ui/ColumnBetween';
 import { MdOutlineAdd, MdOutlineSave } from 'react-icons/md';
 import { BsTrash, BsPlayFill } from 'react-icons/bs';
-import IconButton from '../ui/IconButton';
+import Select from 'renderer/components/ui/Select';
+import Column from 'renderer/components/ui/Column';
 
+import IconButton from '../ui/IconButton';
 import parseText from './parseText';
 
 const TypingControllerWrapper = styled.div`
@@ -61,7 +62,7 @@ export default function TypingController() {
 
   return (
     <TypingControllerWrapper>
-      <Row>
+      <ColumnBetween>
         <ColumnBetween width="260px">
           {mode === 'edit' && currentPractice?.id && (
             <IconButton onClick={handleNew}>
@@ -79,16 +80,29 @@ export default function TypingController() {
             </IconButton>
           )}
         </ColumnBetween>
-      </Row>
-      {mode === 'edit' && editingText && (
-        <Button onClick={handlePlay}>
-          Start{'  '}
-          <span style={{ fontSize: '1rem', lineHeight: '0.25rem' }}>
-            <BsPlayFill />
-          </span>
-        </Button>
-      )}
-      {mode === 'play' && <Button onClick={handleEdit}>Done</Button>}
+        <ColumnBetween width="calc(100% - 280px)">
+          <Column width="250px">
+            <Select
+              options={[
+                { value: '1', label: '1' },
+                { value: '2', label: '2' },
+                { value: '3', label: '3' },
+                { value: '4', label: '4' },
+                { value: '5', label: '5' },
+              ]}
+            />
+          </Column>
+          {mode === 'edit' && editingText && (
+            <Button onClick={handlePlay}>
+              Start{'  '}
+              <span style={{ fontSize: '1rem', lineHeight: '0.25rem' }}>
+                <BsPlayFill />
+              </span>
+            </Button>
+          )}
+          {mode === 'play' && <Button onClick={handleEdit}>Done</Button>}
+        </ColumnBetween>
+      </ColumnBetween>
     </TypingControllerWrapper>
   );
 }
