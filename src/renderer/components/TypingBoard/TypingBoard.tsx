@@ -116,7 +116,7 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
 
   .cm-editor {
     .cm-line {
-      opacity: 0.45;
+      opacity: 0.32;
       color: var(--theme-blue);
     }
     .cm-line:first-of-type {
@@ -147,9 +147,10 @@ export default function TypingBoard() {
     updateLastInteracted,
   } = useEditor();
 
-  const { savePractice } = usePractice();
+  const { savePractice, currentPractice } = usePractice();
 
   const refs = useRef<ReactCodeMirrorRef>({});
+  const answerRefs = useRef<ReactCodeMirrorRef>({});
   const gutterRef = useRef<Element>();
 
   const [currentBlock, setCurrentBlock] = useState();
@@ -174,6 +175,29 @@ export default function TypingBoard() {
       setHintGutterWidth(GutterElem.clientWidth);
     }
   };
+
+  const answerRefCb = useCallback(
+    (current: any) => {
+      answerRefs.current = current;
+
+      console.log(current);
+
+      if (current?.view && current?.view.state.doc.length > 100) {
+        current?.view.dispatch({
+          selection: EditorSelection.create(
+            [
+              EditorSelection.range(4, 5),
+              EditorSelection.range(6, 7),
+              EditorSelection.range(25, 26),
+              EditorSelection.range(50, 55),
+            ],
+            1
+          ),
+        });
+      }
+    },
+    [currentPractice]
+  );
 
   const editorRef = useCallback((current: any) => {
     refs.current = current;
@@ -200,12 +224,13 @@ export default function TypingBoard() {
 
     if (refs.current?.view) {
       const { doc, selection } = refs.current.view.state;
-      const { lineNumber: lineNum, columnNumber: colNum } = getCursorPosition(
-        doc,
-        selection
-      );
+      const {
+        lineNumber: lineNum,
+        columnNumber: colNum,
+        positionNumber,
+      } = getCursorPosition(doc, selection);
 
-      setColLn({ lineNumber: lineNum, columnNumber: colNum });
+      setColLn({ lineNumber: lineNum, columnNumber: colNum, positionNumber });
 
       if (lineNum !== lineNumber) {
         const block = getCurrentBlockByLine(lineNum);
@@ -250,6 +275,7 @@ export default function TypingBoard() {
                     value={processedText}
                     height="100%"
                     theme="dark"
+                    ref={answerRefCb}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -257,6 +283,7 @@ export default function TypingBoard() {
                     basicSetup={{
                       ...DEFAULT_BASIC_SETUP,
                     }}
+                    extensions={[javascript({ jsx: true, typescript: true })]}
                   />
                   <AnswerWrapper>
                     <CodeMirror
