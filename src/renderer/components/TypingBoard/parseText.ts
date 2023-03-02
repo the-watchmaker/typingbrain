@@ -156,20 +156,60 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
   return blocks;
 }
 
+function getHiddenSelections(line: any, blockText: string, pos: number) {
+  const hiddenSelection: { start: number; end: number; text: string }[] = [];
+  let text = line.replace('@hide', '').trim();
+  const textLength = text.length;
+  text = text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+
+  [...blockText.matchAll(new RegExp(text, 'gi'))].forEach((a) => {
+    const start = (a.index || 0) + pos;
+    const end = start + textLength;
+    hiddenSelection.push({ start, end, text });
+  });
+  return hiddenSelection;
+}
+
 export default function parseText(rawText: string) {
   const { nodes } = strip.detail(rawText);
 
   const blocks = walk(nodes, { ...DEFAULT_BLOCK }, false);
 
+  // TODO refactor
+  //
   let text = '';
+  let position = 0;
+  let hiddenSelections: { start: number; end: number; text: string }[] = [];
+
   blocks.forEach((block) => {
+    // create entire code by combining all block.text
     const blockText = block.text;
     text += blockText;
+
+    // find out which comment lines have @hide
+    // and create hidden selections then remove @hide from comment
+    const commentLines = block.comment.split('\n');
+    let newComment = '';
+    commentLines.forEach((line: string) => {
+      if (line.indexOf('@hide') === 0) {
+        hiddenSelections = [
+          ...hiddenSelections,
+          ...getHiddenSelections(line, block.text, position),
+        ];
+      } else {
+        newComment += `${line}\n`;
+      }
+    });
+
+    block.comment = newComment;
+
+    position += blockText.length;
   });
 
   return {
     text,
     nodes,
     blocks,
+    hiddenSelections,
   };
 }

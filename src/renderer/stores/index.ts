@@ -11,6 +11,7 @@ export interface IUIState {
     theme: string;
     lineNumber: number;
     columnNumber: number;
+    positionNumber: number;
     showLineNumbers: boolean;
     showGutter: boolean;
     lastInteracted: number;
@@ -18,6 +19,7 @@ export interface IUIState {
     editingText: string;
     processedText?: string;
     blocks?: any[];
+    hiddenSelections?: any[];
     mode: TMode;
   };
   practiceList: IPractice[] | null;
@@ -32,6 +34,7 @@ export const DEFAULT_STATE = {
     theme: 'monokai',
     lineNumber: 1,
     columnNumber: 1,
+    positionNumber: 0,
     showLineNumbers: true,
     showGutter: true,
     mode: 'edit' as TMode,
@@ -63,6 +66,7 @@ export const reducer = (state: any, action: any) => {
           ...state.editor,
           lineNumber: action.payload.lineNumber,
           columnNumber: action.payload.columnNumber,
+          positionNumber: action.payload.positionNumber,
         },
       };
     case 'updateEditorText':
@@ -95,6 +99,7 @@ export const reducer = (state: any, action: any) => {
         ...state,
         editor: {
           ...state.editor,
+          hiddenSelections: action.payload.hiddenSelections,
           processedText: action.payload.processedText,
           blocks: action.payload.blocks,
         },

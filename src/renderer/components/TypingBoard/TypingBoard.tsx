@@ -116,7 +116,7 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
 
   .cm-editor {
     .cm-line {
-      opacity: 0.45;
+      opacity: 0.32;
       color: var(--theme-blue);
     }
     .cm-line:first-of-type {
@@ -127,6 +127,13 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
       * {
         color: var(--theme-white) !important;
       }
+    }
+
+    .cm-layer.cm-selectionLayer {
+      z-index: 1 !important;
+    }
+
+    .cm-selectionBackground {
     }
   }
 `;
@@ -141,15 +148,17 @@ export default function TypingBoard() {
     setColLn,
     processedText,
     blocks,
+    hiddenSelections,
     mode,
     setEditingText,
     editingText,
     updateLastInteracted,
   } = useEditor();
 
-  const { savePractice } = usePractice();
+  const { savePractice, currentPractice } = usePractice();
 
   const refs = useRef<ReactCodeMirrorRef>({});
+  const hintRefs = useRef<ReactCodeMirrorRef>({});
   const gutterRef = useRef<Element>();
 
   const [currentBlock, setCurrentBlock] = useState();
@@ -174,6 +183,31 @@ export default function TypingBoard() {
       setHintGutterWidth(GutterElem.clientWidth);
     }
   };
+
+  const hintRefCb = useCallback(
+    (current: any) => {
+      hintRefs.current = current;
+
+      if (current?.view && hiddenSelections) {
+        console.log('>', hintRefs?.current?.view, hiddenSelections);
+
+        if (hiddenSelections.length === 1) {
+          const { start, end } = hiddenSelections[0];
+          current?.view.dispatch({
+            selection: EditorSelection.range(start, end),
+          });
+        } else if (hiddenSelections.length > 1) {
+          const editorSelections = hiddenSelections?.map((ops: any) =>
+            EditorSelection.range(ops.start, ops.end)
+          );
+          current?.view.dispatch({
+            selection: EditorSelection.create([...editorSelections], 1),
+          });
+        }
+      }
+    },
+    [hiddenSelections]
+  );
 
   const editorRef = useCallback((current: any) => {
     refs.current = current;
@@ -200,12 +234,13 @@ export default function TypingBoard() {
 
     if (refs.current?.view) {
       const { doc, selection } = refs.current.view.state;
-      const { lineNumber: lineNum, columnNumber: colNum } = getCursorPosition(
-        doc,
-        selection
-      );
+      const {
+        lineNumber: lineNum,
+        columnNumber: colNum,
+        positionNumber,
+      } = getCursorPosition(doc, selection);
 
-      setColLn({ lineNumber: lineNum, columnNumber: colNum });
+      setColLn({ lineNumber: lineNum, columnNumber: colNum, positionNumber });
 
       if (lineNum !== lineNumber) {
         const block = getCurrentBlockByLine(lineNum);
@@ -250,6 +285,7 @@ export default function TypingBoard() {
                     value={processedText}
                     height="100%"
                     theme="dark"
+                    ref={hintRefCb}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -257,6 +293,7 @@ export default function TypingBoard() {
                     basicSetup={{
                       ...DEFAULT_BASIC_SETUP,
                     }}
+                    extensions={[javascript({ jsx: true, typescript: true })]}
                   />
                   <AnswerWrapper>
                     <CodeMirror
