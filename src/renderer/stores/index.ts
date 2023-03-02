@@ -19,6 +19,7 @@ export interface IUIState {
     editingText: string;
     processedText?: string;
     blocks?: any[];
+    hiddenSelections?: any[];
     mode: TMode;
   };
   practiceList: IPractice[] | null;
@@ -98,6 +99,7 @@ export const reducer = (state: any, action: any) => {
         ...state,
         editor: {
           ...state.editor,
+          hiddenSelections: action.payload.hiddenSelections,
           processedText: action.payload.processedText,
           blocks: action.payload.blocks,
         },

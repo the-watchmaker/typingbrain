@@ -156,20 +156,53 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
   return blocks;
 }
 
+function getHiddenSelections(block: any, pos: number) {
+  // if block.comment is a string with new lines \n, if one of the line
+  // starts with @hide then we take the string following @hide
+  // find its location in the text and return its starting and ending position.
+  // within block.text there are multiple @hide, so thus multiple hidden selections
+  // we need to return an array of hidden selections
+  const hiddenSelection: { start: number; end: number; text: string }[] = [];
+
+  const commentLines = block.comment.split('\n');
+  commentLines.forEach((line: string) => {
+    if (line.indexOf('@hide') === 0) {
+      const text = line.replace('@hide', '').trim();
+      const start = block.text.indexOf(text) + pos;
+      const end = start + text.length;
+      hiddenSelection.push({ start, end, text });
+    }
+  });
+
+  return hiddenSelection;
+}
+
 export default function parseText(rawText: string) {
   const { nodes } = strip.detail(rawText);
 
   const blocks = walk(nodes, { ...DEFAULT_BLOCK }, false);
 
   let text = '';
+  let position = 0;
+  let hiddenSelections: { start: number; end: number; text: string }[] = [];
   blocks.forEach((block) => {
+    // create text by joining all blocks
     const blockText = block.text;
     text += blockText;
+
+    // create hidden selection from each block
+    hiddenSelections = [
+      ...hiddenSelections,
+      ...getHiddenSelections(block, position),
+    ];
+
+    position += blockText.length;
   });
 
   return {
     text,
     nodes,
     blocks,
+    hiddenSelections,
   };
 }

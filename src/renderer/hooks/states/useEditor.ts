@@ -18,7 +18,6 @@ export default function useEditorText() {
       processedText,
       blocks,
     }: {
-      originalText: string;
       processedText: string;
       blocks: any[];
     }) => {
@@ -65,15 +64,18 @@ export default function useEditorText() {
       });
     },
     setPlayData: ({
+      hiddenSelections,
       processedText,
       blocks,
     }: {
+      hiddenSelections: any[];
       processedText: string;
       blocks: any[];
     }) => {
       dispatch({
         type: 'updateEditorPlayData',
         payload: {
+          hiddenSelections,
           processedText,
           blocks,
         },

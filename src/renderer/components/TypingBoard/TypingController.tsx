@@ -32,8 +32,8 @@ export default function TypingController() {
 
   const handlePlay = () => {
     if (editingText) {
-      const { text, blocks } = parseText(editingText);
-      setPlayData({ processedText: text, blocks });
+      const { text, blocks, hiddenSelections } = parseText(editingText);
+      setPlayData({ processedText: text, blocks, hiddenSelections });
       setMode('play');
     }
   };

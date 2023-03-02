@@ -128,6 +128,13 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
         color: var(--theme-white) !important;
       }
     }
+
+    .cm-layer.cm-selectionLayer {
+      z-index: 1 !important;
+    }
+
+    .cm-selectionBackground {
+    }
   }
 `;
 
@@ -141,6 +148,7 @@ export default function TypingBoard() {
     setColLn,
     processedText,
     blocks,
+    hiddenSelections,
     mode,
     setEditingText,
     editingText,
@@ -150,7 +158,7 @@ export default function TypingBoard() {
   const { savePractice, currentPractice } = usePractice();
 
   const refs = useRef<ReactCodeMirrorRef>({});
-  const answerRefs = useRef<ReactCodeMirrorRef>({});
+  const hintRefs = useRef<ReactCodeMirrorRef>({});
   const gutterRef = useRef<Element>();
 
   const [currentBlock, setCurrentBlock] = useState();
@@ -176,27 +184,29 @@ export default function TypingBoard() {
     }
   };
 
-  const answerRefCb = useCallback(
+  const hintRefCb = useCallback(
     (current: any) => {
-      answerRefs.current = current;
+      hintRefs.current = current;
 
-      console.log(current);
+      if (current?.view && hiddenSelections) {
+        console.log('>', hintRefs?.current?.view, hiddenSelections);
 
-      if (current?.view && current?.view.state.doc.length > 100) {
-        current?.view.dispatch({
-          selection: EditorSelection.create(
-            [
-              EditorSelection.range(4, 5),
-              EditorSelection.range(6, 7),
-              EditorSelection.range(25, 26),
-              EditorSelection.range(50, 55),
-            ],
-            1
-          ),
-        });
+        if (hiddenSelections.length === 1) {
+          const { start, end } = hiddenSelections[0];
+          current?.view.dispatch({
+            selection: EditorSelection.range(start, end),
+          });
+        } else if (hiddenSelections.length > 1) {
+          const editorSelections = hiddenSelections?.map((ops: any) =>
+            EditorSelection.range(ops.start, ops.end)
+          );
+          current?.view.dispatch({
+            selection: EditorSelection.create([...editorSelections], 1),
+          });
+        }
       }
     },
-    [currentPractice]
+    [hiddenSelections]
   );
 
   const editorRef = useCallback((current: any) => {
@@ -275,7 +285,7 @@ export default function TypingBoard() {
                     value={processedText}
                     height="100%"
                     theme="dark"
-                    ref={answerRefCb}
+                    ref={hintRefCb}
                     style={{
                       width: '100%',
                       height: '100%',
