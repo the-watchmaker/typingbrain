@@ -6,6 +6,7 @@ import ColumnBetween from 'renderer/components/ui/ColumnBetween';
 import { MdOutlineAdd, MdOutlineSave } from 'react-icons/md';
 import { BsTrash, BsPlayFill } from 'react-icons/bs';
 import Select from 'renderer/components/ui/Select';
+import Column from 'renderer/components/ui/Column';
 
 import IconButton from '../ui/IconButton';
 import parseText from './parseText';
@@ -80,7 +81,17 @@ export default function TypingController() {
           )}
         </ColumnBetween>
         <ColumnBetween width="calc(100% - 280px)">
-          <Select options={[{ value: '1', label: '1' }]} />
+          <Column width="250px">
+            <Select
+              options={[
+                { value: '1', label: '1' },
+                { value: '2', label: '2' },
+                { value: '3', label: '3' },
+                { value: '4', label: '4' },
+                { value: '5', label: '5' },
+              ]}
+            />
+          </Column>
           {mode === 'edit' && editingText && (
             <Button onClick={handlePlay}>
               Start{'  '}

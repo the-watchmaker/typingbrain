@@ -9,6 +9,11 @@ const SelectWrapper = styled.div<{ width?: string }>`
 
     .react-select__control {
       min-height: 24px;
+      border-radius: 0px;
+      background-color: transparent;
+      * {
+        color: var(--theme-white);
+      }
     }
 
     .react-select__indicator {
@@ -18,18 +23,36 @@ const SelectWrapper = styled.div<{ width?: string }>`
     .react-select__input-container {
       padding: 0px;
     }
+
+    .react-select__menu {
+      margin-top: 0px;
+      background-color: var(--theme-bg-lighter);
+    }
+
+    .react-select__option {
+      color: var(--theme-white);
+      cursor: pointer;
+    }
+
+    .react-select__option--is-selected {
+      color: var(--theme-white);
+      background-color: var(--theme-item-bg-selected) !important;
+      &:hover {
+        background-color: var(--theme-item-bg-selected-hover) !important;
+      }
+    }
+
+    .react-select__option:hover,
+    .react-select__option--is-focused {
+      background-color: var(--theme-item-bg-hover);
+      color: var(--theme-white);
+    }
   }
 `;
 
-export default function Select({
-  options,
-  width = '100%',
-}: {
-  options: any[];
-  width?: string;
-}) {
+export default function Select({ options }: { options: any[] }) {
   return (
-    <SelectWrapper width={width}>
+    <SelectWrapper>
       <ReactSelect
         options={options}
         className="react-select-container"
