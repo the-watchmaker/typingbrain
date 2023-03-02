@@ -158,11 +158,13 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
 
 function getHiddenSelections(line: any, blockText: string, pos: number) {
   const hiddenSelection: { start: number; end: number; text: string }[] = [];
-  const text = line.replace('@hide', '').trim();
+  let text = line.replace('@hide', '').trim();
+  const textLength = text.length;
+  text = text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
   [...blockText.matchAll(new RegExp(text, 'gi'))].forEach((a) => {
     const start = (a.index || 0) + pos;
-    const end = start + text.length;
+    const end = start + textLength;
     hiddenSelection.push({ start, end, text });
   });
   return hiddenSelection;
