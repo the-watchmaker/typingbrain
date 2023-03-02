@@ -156,29 +156,15 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
   return blocks;
 }
 
-function getHiddenSelections(block: any, pos: number) {
-  // if block.comment is a string with new lines \n, if one of the line
-  // starts with @hide then we take the string following @hide
-  // find its location in the text and return its starting and ending position.
-  // within block.text there are multiple @hide, so thus multiple hidden selections
-  // we need to return an array of hidden selections
+function getHiddenSelections(line: any, blockText: string, pos: number) {
   const hiddenSelection: { start: number; end: number; text: string }[] = [];
+  const text = line.replace('@hide', '').trim();
 
-  const commentLines = block.comment.split('\n');
-  commentLines.forEach((line: string) => {
-    if (line.indexOf('@hide') === 0) {
-      const text = line.replace('@hide', '').trim();
-      const found = block.text.indexOf(text);
-
-      if (found > -1) {
-        const start = found + pos;
-        const end = start + text.length;
-        hiddenSelection.push({ start, end, text });
-        console.log(pos, line, text, block.text, block.text.indexOf(text));
-      }
-    }
+  [...blockText.matchAll(new RegExp(text, 'gi'))].forEach((a) => {
+    const start = (a.index || 0) + pos;
+    const end = start + text.length;
+    hiddenSelection.push({ start, end, text });
   });
-
   return hiddenSelection;
 }
 
@@ -187,19 +173,33 @@ export default function parseText(rawText: string) {
 
   const blocks = walk(nodes, { ...DEFAULT_BLOCK }, false);
 
+  // TODO refactor
+  //
   let text = '';
   let position = 0;
   let hiddenSelections: { start: number; end: number; text: string }[] = [];
+
   blocks.forEach((block) => {
-    // create text by joining all blocks
+    // create entire code by combining all block.text
     const blockText = block.text;
     text += blockText;
 
-    // create hidden selection from each block
-    hiddenSelections = [
-      ...hiddenSelections,
-      ...getHiddenSelections(block, position),
-    ];
+    // find out which comment lines have @hide
+    // and create hidden selections then remove @hide from comment
+    const commentLines = block.comment.split('\n');
+    let newComment = '';
+    commentLines.forEach((line: string) => {
+      if (line.indexOf('@hide') === 0) {
+        hiddenSelections = [
+          ...hiddenSelections,
+          ...getHiddenSelections(line, block.text, position),
+        ];
+      } else {
+        newComment += `${line}\n`;
+      }
+    });
+
+    block.comment = newComment;
 
     position += blockText.length;
   });
