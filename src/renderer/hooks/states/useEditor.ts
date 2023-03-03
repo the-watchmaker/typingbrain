@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { globalContext, TMode } from 'renderer/stores';
+import { globalContext } from 'renderer/stores';
+import { TMode } from 'main/models/models';
 
 export default function useEditorText() {
   const { state, dispatch } = useContext(globalContext);

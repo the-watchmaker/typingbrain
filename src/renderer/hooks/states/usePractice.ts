@@ -1,4 +1,4 @@
-import { IPractice } from 'main/models/models';
+import { IPractice, ISessionPartial } from 'main/models/models';
 import { useContext } from 'react';
 import {
   getPracticeIpc,
@@ -120,11 +120,21 @@ export default function useEditorText() {
     }
   };
 
+  const updateCurrentSession = (currentSession: ISessionPartial) => {
+    dispatch({
+      type: 'updateCurrentSession',
+      payload: {
+        currentSession,
+      },
+    });
+  };
+
   return {
     currentPractice: state.currentPractice,
     practiceList: state.practiceList,
     getPractice,
     getPracticeList,
+    updateCurrentSession,
     updateCurrentPractice,
     deleteCurrentPractice,
     createPractice,
