@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import ReactSelect from 'react-select';
 import styled from 'styled-components';
 
@@ -50,13 +51,26 @@ const SelectWrapper = styled.div<{ width?: string }>`
   }
 `;
 
-export default function Select({ options }: { options: any[] }) {
+export default function Select({
+  value,
+  defaultValue,
+  options,
+  onChange,
+}: {
+  defaultValue?: any;
+  value: any;
+  options: any[];
+  onChange: Function;
+}) {
   return (
     <SelectWrapper>
       <ReactSelect
+        defaultValue={defaultValue}
+        value={options.find((option) => option.value === value)}
         options={options}
         className="react-select-container"
         classNamePrefix="react-select"
+        onChange={(e) => onChange(e)}
       />
     </SelectWrapper>
   );
