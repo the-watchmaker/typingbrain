@@ -12,14 +12,6 @@ const DEFAULT_BLOCK = {
   lineFrom: 1,
 };
 
-export const createNewLinen = (n: number) => {
-  let text = '';
-  for (let i = 0; i < n; i += 1) {
-    text += '\n';
-  }
-  return text;
-};
-
 function walk(node: any, currentBlock: any, inBlock: boolean = false) {
   const blocks: any[] = [];
   const commentLines: number[] = [];
