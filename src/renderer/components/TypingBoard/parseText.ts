@@ -162,7 +162,7 @@ function getHiddenSelections(line: any, blockText: string, pos: number) {
   const textLength = text.length;
   text = text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
-  [...blockText.matchAll(new RegExp(text, 'gi'))].forEach((a) => {
+  [...blockText.matchAll(new RegExp(text, 'g'))].forEach((a) => {
     const start = (a.index || 0) + pos;
     const end = start + textLength;
     hiddenSelection.push({ start, end, text });
