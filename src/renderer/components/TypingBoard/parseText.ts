@@ -90,7 +90,13 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             break;
           }
 
-          const comment = `${child.value.replace(/\/\/\s?/, '').trim()} \n\n`;
+          const comment = `${child.value
+            .replace(/\/\/\s?/, '')
+            .replace(/#\s?/, '')
+            .replace(/\/*\s?/, '')
+            .replace(/=begin\s?/, '')
+            .replace(/"""\s?/, '')
+            .trim()} \n\n`;
 
           if (
             currentBlock.previousType === 'text' &&
