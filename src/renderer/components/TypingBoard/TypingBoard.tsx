@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// REFACTOR
+// HELP REFACTOR needed
+// this is a total mess
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
