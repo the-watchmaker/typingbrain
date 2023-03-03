@@ -18,7 +18,10 @@ const parse = (input, options = {}) => {
   const cst = new Block({ type: 'root', nodes: [] });
   const stack = [cst];
   const name = (options.language || 'javascript').toLowerCase();
-  const lang = languages[name];
+
+  // TODO add support for the rest of the languages
+  // Right now we are just falling back on c
+  const lang = languages[name] || languages.c;
 
   let line = 1;
 
