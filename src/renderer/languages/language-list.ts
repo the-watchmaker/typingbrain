@@ -21,6 +21,7 @@ import { r } from '@codemirror/legacy-modes/mode/r';
 import { fortran } from '@codemirror/legacy-modes/mode/fortran';
 import { erlang } from '@codemirror/legacy-modes/mode/erlang';
 import { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile';
+import { xml, html } from '@codemirror/legacy-modes/mode/xml';
 import { cobol } from '@codemirror/legacy-modes/mode/cobol';
 import { nginx } from '@codemirror/legacy-modes/mode/nginx';
 import {
@@ -154,6 +155,16 @@ export const languageList: { [code: string]: TLanguage } = {
     name: 'CSS',
     code: 'css',
     extension: StreamLanguage.define(css),
+  },
+  xml: {
+    name: 'XML',
+    code: 'xml',
+    extension: StreamLanguage.define(xml),
+  },
+  html: {
+    name: 'HTML',
+    code: 'html',
+    extension: StreamLanguage.define(html),
   },
   mysql: {
     name: 'MySQL',
