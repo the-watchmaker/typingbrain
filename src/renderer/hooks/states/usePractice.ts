@@ -48,7 +48,9 @@ export default function useEditorText() {
   };
 
   const savePractice = (practice: any) => {
-    const title = extractPracticeTitle(practice.text);
+    const title = extractPracticeTitle(
+      practice.text || state.editor.editingText
+    );
 
     if (state.currentPractice?.id) {
       updatePracticeIpc(

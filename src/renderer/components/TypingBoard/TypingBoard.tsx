@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import useEditor from 'renderer/hooks/states/useEditor';
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { EditorSelection } from '@codemirror/state';
-import { javascript } from '@codemirror/lang-javascript';
 import Row from 'renderer/components/ui/Row';
 import Column from 'renderer/components/ui/Column';
 import usePractice from 'renderer/hooks/states/usePractice';
+import { languageList } from 'renderer/languages/language-list';
 
 import getCursorPosition from './getCursorPosition';
 import TypingBlockInfo from './TypingBlockInfo';
@@ -158,7 +158,7 @@ export default function TypingBoard() {
     updateLastInteracted,
   } = useEditor();
 
-  const { savePractice } = usePractice();
+  const { savePractice, currentPractice } = usePractice();
 
   const refs = useRef<ReactCodeMirrorRef>({});
   const hintRefs = useRef<ReactCodeMirrorRef>({});
@@ -166,6 +166,12 @@ export default function TypingBoard() {
 
   const [currentBlock, setCurrentBlock] = useState();
   const [hintGutterWidth, setHintGutterWidth] = useState(0);
+
+  const currentLangExt = useMemo(() => {
+    const lang = currentPractice?.language || 'text';
+    const ext = languageList[lang]?.extension as any;
+    return ext;
+  }, [currentPractice]);
 
   const getCurrentBlockByLine = (lineNum: number) => {
     if (!blocks) {
@@ -192,8 +198,6 @@ export default function TypingBoard() {
       hintRefs.current = current;
 
       if (current?.view && hiddenSelections) {
-        console.log('>', hintRefs?.current?.view, hiddenSelections);
-
         if (hiddenSelections.length === 1) {
           const { start, end } = hiddenSelections[0];
           current?.view.dispatch({
@@ -296,7 +300,7 @@ export default function TypingBoard() {
                     basicSetup={{
                       ...DEFAULT_BASIC_SETUP,
                     }}
-                    extensions={[javascript({ jsx: true, typescript: true })]}
+                    extensions={[...(currentLangExt ? [currentLangExt] : [])]}
                   />
                   <AnswerWrapper>
                     <CodeMirror
@@ -316,7 +320,7 @@ export default function TypingBoard() {
                         highlightActiveLine: true,
                       }}
                       onClick={handleOnCursorActivity}
-                      extensions={[javascript({ jsx: true, typescript: true })]}
+                      extensions={[...(currentLangExt ? [currentLangExt] : [])]}
                       onChange={handleAnswerChange}
                       onKeyDown={handleOnCursorActivity}
                     />
@@ -343,7 +347,7 @@ export default function TypingBoard() {
                 highlightActiveLine: true,
               }}
               onClick={handleOnCursorActivity}
-              extensions={[javascript({ jsx: true, typescript: true })]}
+              extensions={[...(currentLangExt ? [currentLangExt] : [])]}
               onChange={handleEditorChange}
               onKeyDown={handleOnCursorActivity}
             />

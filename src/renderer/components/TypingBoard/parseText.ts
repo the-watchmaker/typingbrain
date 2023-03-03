@@ -170,8 +170,8 @@ function getHiddenSelections(line: any, blockText: string, pos: number) {
   return hiddenSelection;
 }
 
-export default function parseText(rawText: string) {
-  const { nodes } = strip.detail(rawText);
+export default function parseText(rawText: string, language: string) {
+  const { nodes } = strip.detail(rawText, { language });
 
   const blocks = walk(nodes, { ...DEFAULT_BLOCK }, false);
 

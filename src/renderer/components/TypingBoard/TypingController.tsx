@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 import Button from 'renderer/components/ui/Button';
 import useEditor from 'renderer/hooks/states/useEditor';
@@ -8,6 +9,10 @@ import { BsTrash, BsPlayFill } from 'react-icons/bs';
 import Select from 'renderer/components/ui/Select';
 import Column from 'renderer/components/ui/Column';
 
+import {
+  languageList,
+  languageOptions,
+} from 'renderer/languages/language-list';
 import IconButton from '../ui/IconButton';
 import parseText from './parseText';
 
@@ -24,16 +29,26 @@ const TypingControllerWrapper = styled.div`
 export default function TypingController() {
   const { mode, editingText, setPlayData, setMode, setEditingText } =
     useEditor();
+
   const {
     updateCurrentPractice,
     createPractice,
     deleteCurrentPractice,
     currentPractice,
+    savePractice,
   } = usePractice();
+
+  const language = useMemo(() => {
+    const lang = currentPractice?.language || 'text';
+    return languageList[lang];
+  }, [currentPractice]);
 
   const handlePlay = () => {
     if (editingText) {
-      const { text, blocks, hiddenSelections } = parseText(editingText);
+      const { text, blocks, hiddenSelections } = parseText(
+        editingText,
+        currentPractice?.language || 'text'
+      );
       setPlayData({ processedText: text, blocks, hiddenSelections });
       setMode('play');
     }
@@ -60,6 +75,12 @@ export default function TypingController() {
     createPractice();
   };
 
+  const handleLanguageChange = (value: any) => {
+    savePractice({
+      language: value.value as string,
+    });
+  };
+
   return (
     <TypingControllerWrapper>
       <ColumnBetween>
@@ -83,13 +104,9 @@ export default function TypingController() {
         <ColumnBetween width="calc(100% - 280px)">
           <Column width="250px">
             <Select
-              options={[
-                { value: '1', label: '1' },
-                { value: '2', label: '2' },
-                { value: '3', label: '3' },
-                { value: '4', label: '4' },
-                { value: '5', label: '5' },
-              ]}
+              value={language.code}
+              options={languageOptions}
+              onChange={handleLanguageChange}
             />
           </Column>
           {mode === 'edit' && editingText && (
