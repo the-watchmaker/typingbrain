@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// REFACTOR
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import useEditor from 'renderer/hooks/states/useEditor';
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
-import { EditorSelection } from '@codemirror/state';
+import { EditorSelection, EditorState } from '@codemirror/state';
 import Row from 'renderer/components/ui/Row';
 import Column from 'renderer/components/ui/Column';
+import useSession from 'renderer/hooks/states/useSession';
 import usePractice from 'renderer/hooks/states/usePractice';
 import { languageList } from 'renderer/languages/language-list';
 
@@ -115,12 +117,10 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
   padding-left: ${({ gutterWidth }) => gutterWidth || 0}px;
   width: 100%;
   height: auto;
-  color: var(--theme-blue);
 
   .cm-editor {
     .cm-line {
       opacity: 0.32;
-      color: var(--theme-blue);
     }
     .cm-line:first-of-type {
       opacity: 1;
@@ -132,7 +132,7 @@ const HintWrapper = styled.div<{ gutterWidth: number }>`
       }
     }
 
-    .cm-layer.cm-selectionLayer {
+    .cm-selectionLayer {
       z-index: 1 !important;
     }
 
@@ -160,8 +160,11 @@ export default function TypingBoard() {
 
   const { savePractice, currentPractice } = usePractice();
 
+  const { currentSession, updateCurrentSession } = useSession();
+
   const refs = useRef<ReactCodeMirrorRef>({});
   const hintRefs = useRef<ReactCodeMirrorRef>({});
+  const answerRefs = useRef<ReactCodeMirrorRef>({});
   const gutterRef = useRef<Element>();
 
   const [currentBlock, setCurrentBlock] = useState();
@@ -218,9 +221,12 @@ export default function TypingBoard() {
 
   const editorRef = useCallback((current: any) => {
     refs.current = current;
+  }, []);
+
+  const answerRef = useCallback((current: any) => {
+    answerRefs.current = current;
 
     const GutterElem = current?.editor?.querySelector('.cm-gutters');
-
     if (GutterElem) {
       gutterRef.current = GutterElem;
       setHintGutterWidth(GutterElem.clientWidth);
@@ -236,11 +242,11 @@ export default function TypingBoard() {
     setCurrentBlock(block || {});
   }, [blocks, mode]);
 
-  const handleOnCursorActivity = () => {
+  const handleOnCursorActivity = (thisRefs: any) => {
     updateLastInteracted();
 
-    if (refs.current?.view) {
-      const { doc, selection } = refs.current.view.state;
+    if (thisRefs.current?.view) {
+      const { doc, selection } = thisRefs.current.view.state;
       const {
         lineNumber: lineNum,
         columnNumber: colNum,
@@ -260,7 +266,7 @@ export default function TypingBoard() {
 
   const handleEditorChange = (text: string) => {
     setEditingText(text);
-    handleOnCursorActivity();
+    handleOnCursorActivity(refs);
 
     if (editorTimeoutInstance) {
       clearTimeout(editorTimeoutInstance);
@@ -271,9 +277,18 @@ export default function TypingBoard() {
     }, EDITOR_UPDATE_DELAY_MS);
   };
 
-  const handleAnswerChange = () => {
-    handleOnCursorActivity();
+  const handleAnswerChange = (answerText: string) => {
+    handleOnCursorActivity(answerRefs);
+
+    updateCurrentSession({
+      prevAnswerText: currentSession.answerText,
+      answerText,
+    });
   };
+
+  const lengthLimit = useCallback((tr: any) => {
+    return tr.newDoc.lines < (hintRefs.current?.state?.doc?.lines || 0) + 1;
+  }, []);
 
   return (
     <TypingBoardWrapper>
@@ -306,8 +321,8 @@ export default function TypingBoard() {
                     <CodeMirror
                       autoFocus
                       selection={EditorSelection.cursor(1)}
-                      ref={editorRef}
-                      value={'\n'}
+                      ref={answerRef}
+                      value={currentSession?.answerText || ''}
                       height="100%"
                       theme="dark"
                       style={{
@@ -319,10 +334,13 @@ export default function TypingBoard() {
                         lineNumbers: true,
                         highlightActiveLine: true,
                       }}
-                      onClick={handleOnCursorActivity}
-                      extensions={[...(currentLangExt ? [currentLangExt] : [])]}
+                      onClick={() => handleOnCursorActivity(answerRefs)}
+                      extensions={[
+                        ...(currentLangExt ? [currentLangExt] : []),
+                        EditorState.changeFilter.of(lengthLimit),
+                      ]}
                       onChange={handleAnswerChange}
-                      onKeyDown={handleOnCursorActivity}
+                      onKeyDown={() => handleOnCursorActivity(answerRefs)}
                     />
                   </AnswerWrapper>
                 </HintWrapper>
@@ -346,10 +364,10 @@ export default function TypingBoard() {
                 lineNumbers: true,
                 highlightActiveLine: true,
               }}
-              onClick={handleOnCursorActivity}
+              onClick={() => handleOnCursorActivity(refs)}
               extensions={[...(currentLangExt ? [currentLangExt] : [])]}
               onChange={handleEditorChange}
-              onKeyDown={handleOnCursorActivity}
+              onKeyDown={() => handleOnCursorActivity(refs)}
             />
           </ScrollWrapper>
         </EditorWrapper>
