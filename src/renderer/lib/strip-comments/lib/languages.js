@@ -25,11 +25,15 @@ exports.html = {
   BLOCK_CLOSE_STRICT_LOOSE_REGEX: /^(?<!(?:<!-))--\s*>(\s*\n+|\n*)/,
 };
 
-exports.javascript = {
-  BLOCK_OPEN_REGEX: /^\/\*\*?(!?)/,
-  BLOCK_CLOSE_REGEX: /^\*\/(\n?)/,
-  LINE_REGEX: /^\/\/(!?).*/,
-};
+exports.javascript =
+  exports.go =
+  exports.rust =
+  exports.coffeescript =
+    {
+      BLOCK_OPEN_REGEX: /^\/\*\*?(!?)/,
+      BLOCK_CLOSE_REGEX: /^\*\/(\n?)/,
+      LINE_REGEX: /^\/\/(!?).*/,
+    };
 
 exports.lua = {
   BLOCK_OPEN_REGEX: /^--\[\[/,
@@ -61,6 +65,10 @@ exports.python = {
 exports.ruby = {
   BLOCK_OPEN_REGEX: /^=begin/,
   BLOCK_CLOSE_REGEX: /^=end/,
+  LINE_REGEX: /^#.*/,
+};
+
+exports.shell = {
   LINE_REGEX: /^#.*/,
 };
 
