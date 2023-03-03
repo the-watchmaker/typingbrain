@@ -1,29 +1,11 @@
-import { IPractice } from 'main/models/models';
+import { IPractice, IEditor, ISession, TMode } from 'main/models/models';
 import { Dispatch, createContext } from 'react';
 
-export type TMode = 'edit' | 'play' | 'view';
-
 export interface IUIState {
-  editor: {
-    fontSize: number;
-    fontFamily: string;
-    language: string;
-    theme: string;
-    lineNumber: number;
-    columnNumber: number;
-    positionNumber: number;
-    showLineNumbers: boolean;
-    showGutter: boolean;
-    lastInteracted: number;
-    // values
-    editingText: string;
-    processedText?: string;
-    blocks?: any[];
-    hiddenSelections?: any[];
-    mode: TMode;
-  };
+  editor: IEditor;
   practiceList: IPractice[] | null;
   currentPractice: IPractice | null;
+  currentSession: ISession;
 }
 
 export const DEFAULT_STATE = {
@@ -43,6 +25,15 @@ export const DEFAULT_STATE = {
   },
   practiceList: [],
   currentPractice: null,
+  currentSession: {
+    prevAnswerText: '\n',
+    answerText: '\n',
+    completion: 0,
+    wrong: 0,
+    cursorPosition: 0,
+    column: 1,
+    line: 1,
+  },
 };
 
 export const initialState: IUIState = {
@@ -113,6 +104,14 @@ export const reducer = (state: any, action: any) => {
       return {
         ...state,
         currentPractice: action.payload.currentPractice,
+      };
+    case 'updateCurrentSession':
+      return {
+        ...state,
+        currentSession: {
+          ...state.currentSession,
+          ...action.payload.currentSession,
+        },
       };
     default:
   }
