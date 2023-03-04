@@ -26,7 +26,9 @@
 I will try my best to answer your questions. 
 
 
-## Why Desktop?
+---
+
+## Why Desktop apps first?
 I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless interconnected apps. 
 
 Downloadable dApps desktop apps are:
