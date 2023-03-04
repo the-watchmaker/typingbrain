@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 import Button from 'renderer/components/ui/Button';
 import useEditor from 'renderer/hooks/states/useEditor';
+import useSession from 'renderer/hooks/states/useSession';
 import usePractice from 'renderer/hooks/states/usePractice';
 import ColumnBetween from 'renderer/components/ui/ColumnBetween';
 import { MdOutlineAdd, MdOutlineSave } from 'react-icons/md';
@@ -13,6 +14,8 @@ import {
   languageList,
   languageOptions,
 } from 'renderer/languages/language-list';
+import createSessionText from './createSessionText';
+
 import IconButton from '../ui/IconButton';
 import parseText from './parseText';
 
@@ -29,6 +32,7 @@ const TypingControllerWrapper = styled.div`
 export default function TypingController() {
   const { mode, editingText, setPlayData, setMode, setEditingText } =
     useEditor();
+  const { updateCurrentSession } = useSession();
 
   const {
     updateCurrentPractice,
@@ -50,6 +54,9 @@ export default function TypingController() {
         currentPractice?.language || 'text'
       );
       setPlayData({ processedText: text, blocks, hiddenSelections });
+      updateCurrentSession({
+        answerText: createSessionText(blocks),
+      });
       setMode('play');
     }
   };
@@ -103,11 +110,13 @@ export default function TypingController() {
         </ColumnBetween>
         <ColumnBetween width="calc(100% - 280px)">
           <Column width="250px">
-            <Select
-              value={language.code}
-              options={languageOptions}
-              onChange={handleLanguageChange}
-            />
+            {mode === 'edit' && (
+              <Select
+                value={language.code}
+                options={languageOptions}
+                onChange={handleLanguageChange}
+              />
+            )}
           </Column>
           {mode === 'edit' && editingText && (
             <Button onClick={handlePlay}>
