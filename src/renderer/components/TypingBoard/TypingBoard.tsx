@@ -149,6 +149,8 @@ let editorTimeoutInstance: any;
 export default function TypingBoard() {
   const {
     lineNumber,
+    columnNumber,
+    positionNumber,
     setColLn,
     processedText,
     blocks,
@@ -160,8 +162,9 @@ export default function TypingBoard() {
   } = useEditor();
 
   const { savePractice, currentPractice } = usePractice();
-
   const { currentSession, updateCurrentSession } = useSession();
+
+  const [cursorToJumpTo, setCursorToJumpTo] = useState(0);
 
   const refs = useRef<ReactCodeMirrorRef>({});
   const hintRefs = useRef<ReactCodeMirrorRef>({});
@@ -235,6 +238,16 @@ export default function TypingBoard() {
   }, []);
 
   useEffect(() => {
+    if (answerRefs?.current?.view) {
+      answerRefs?.current?.view?.dispatch({
+        selection: {
+          anchor: cursorToJumpTo,
+        },
+      });
+    }
+  }, [cursorToJumpTo]);
+
+  useEffect(() => {
     handleGutterWidth();
   }, [lineNumber]);
 
@@ -251,10 +264,14 @@ export default function TypingBoard() {
       const {
         lineNumber: lineNum,
         columnNumber: colNum,
-        positionNumber,
+        positionNumber: posNum,
       } = getCursorPosition(doc, selection);
 
-      setColLn({ lineNumber: lineNum, columnNumber: colNum, positionNumber });
+      setColLn({
+        lineNumber: lineNum,
+        columnNumber: colNum,
+        positionNumber: posNum,
+      });
 
       if (lineNum !== lineNumber) {
         const block = getCurrentBlockByLine(lineNum);
@@ -280,16 +297,54 @@ export default function TypingBoard() {
 
   const handleAnswerChange = (answerText: string) => {
     handleOnCursorActivity(answerRefs);
-
     updateCurrentSession({
       prevAnswerText: currentSession.answerText,
       answerText,
     });
   };
 
-  const lengthLimit = useCallback((tr: any) => {
-    return tr.newDoc.lines < (hintRefs.current?.state?.doc?.lines || 0) + 1;
-  }, []);
+  const lengthLimit = useCallback(
+    (tr: any) => {
+      if (tr.newDoc.lines === (hintRefs.current?.state?.doc?.lines || 0)) {
+        return true;
+      }
+
+      if (tr.newDoc.lines !== (hintRefs.current?.state?.doc?.lines || 0)) {
+        // eslint-disable-next-line no-underscore-dangle
+        const { doc } = tr.startState;
+        const lineText = doc.text[lineNumber - 1] || '';
+        const postMore = lineText.length - (columnNumber - 1);
+        const nextline = doc.text[lineNumber];
+
+        if (typeof nextline === 'undefined') {
+          return false;
+        }
+
+        let nextlineLength = nextline.length;
+        if (nextline === '') {
+          nextlineLength = 0;
+        }
+
+        console.log(doc.text);
+        console.log({
+          lineText: `${lineText}`,
+          lineTextlength: lineText.length,
+          columnNumber,
+          positionNumber,
+          postMore,
+          lineNumber,
+          nextline: doc.text[lineNumber],
+          nextlineLength,
+          a: positionNumber + postMore + nextlineLength + 1,
+        });
+
+        setCursorToJumpTo(positionNumber + postMore + nextlineLength + 1);
+      }
+
+      return false;
+    },
+    [positionNumber]
+  );
 
   return (
     <TypingBoardWrapper>
@@ -305,6 +360,7 @@ export default function TypingBoard() {
               <ScrollWrapper>
                 <HintWrapper gutterWidth={hintGutterWidth}>
                   <CodeMirror
+                    readOnly
                     value={processedText}
                     height="100%"
                     theme="dark"
