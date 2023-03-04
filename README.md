@@ -23,16 +23,30 @@
 
 #### Step 5. Follow the project and give me feedbacks for new features or bugs!
 
+I will try my best to answer your questions. 
 
 
-Copy and paste code snippet and paste on it and then start tracing!
+## Why Desktop?
+I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless interconnected apps. 
 
-### Practice code examples
+Downloadable dApps desktop apps are:
+
+- Easy to run. No need to clone -> set up environment -> run it locally -> visit localhost:3000
+- It's yours. Keep it.
+
+
+
+## Resources
+
+## Practice code examples
 [Go by Examples](https://github.com/mmcgrana/gobyexample/tree/master/examples)
 
 
 ### ChatGPT integration (Coming soon)
+
 ### Github integration (Coming soon)
+
+### Web Link Generation (Coming Soon)
 
 
 ### To run and develop
