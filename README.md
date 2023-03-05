@@ -28,12 +28,10 @@ Get feedbacks from mistakes.
 ![stanley-theoffice](https://user-images.githubusercontent.com/4682613/222879328-7974e961-cc24-42c7-ba85-1d082d59a32f.gif)
 
 
-#### Step 5. Follow the project and give me feedbacks for new features or bugs!
-
-I will try my best to answer your questions. 
+#### Step 5. Contribute
 
 
----
+
 
 ## Why Desktop apps first?
 I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless interconnected apps. 
