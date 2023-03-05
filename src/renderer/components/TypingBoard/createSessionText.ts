@@ -1,13 +1,9 @@
 import { createNewLinesFromTextWithSpace } from './createNewLine';
 
 const createSessionText = (blocks: any[]) => {
-  let newSessionText = '\n'; // The first string should be a new line to skip the title
+  let newSessionText = '';
 
-  blocks.forEach((block: any, index: number) => {
-    if (index === 0) {
-      return;
-    }
-
+  blocks.forEach((block: any) => {
     const lines = (block.comment || '').split('\n');
     let newComment = '';
 
