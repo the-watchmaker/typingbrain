@@ -3,29 +3,52 @@
 
 # Turn your code into learning material
 
-### How to use it
+## How to use it
 
-Step 1. Copy a code snippet you want to memorize and get familiar with
-
-Step 2. Paste on TypingBrain editor
-
-Step 3. Add some notes about the code
-
-Step 4. Hit "Practice" button and start typing the code while reading the note from Step 3
-
-Step 5. Keep practicing
+#### Step 1. Copy and paste a code snippet you want to memorize and get familiar with
+<img src="https://user-images.githubusercontent.com/4682613/222879041-fb5b4b32-c317-4731-bc11-b1343820e9f1.gif" width="650px" alt="Showing how it works." />
 
 
-<img src="https://user-images.githubusercontent.com/4682613/221981222-6f3e0f8e-d606-4abc-bde4-f87534bd428a.gif" width="650px" alt="Showing how it works." />
+#### Step 2. Add some notes about the code in markdown.
+<img src="https://user-images.githubusercontent.com/4682613/222879201-80d61cae-1c1e-40f7-b14c-54b0901a250e.gif" width="650px" alt="Showing how it works." />
 
-Copy and paste code snippet and paste on it and then start tracing!
 
-### Practice code examples
+#### Step 3. Hit "Practice" button and start typing the code while reading the note from Step 3
+<img src="https://user-images.githubusercontent.com/4682613/222879268-634561c6-09ec-4c3f-bbdd-69b7a3a19134.gif" width="650px" alt="Showing how it works." />
+
+
+#### Step 4. Keep practicing and see if this works!
+![stanley-theoffice](https://user-images.githubusercontent.com/4682613/222879328-7974e961-cc24-42c7-ba85-1d082d59a32f.gif)
+
+
+#### Step 5. Follow the project and give me feedbacks for new features or bugs!
+
+I will try my best to answer your questions. 
+
+
+---
+
+## Why Desktop apps first?
+I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless interconnected apps. 
+
+Downloadable dApps desktop apps are:
+
+- Easy to run. No need to clone -> set up environment -> run it locally -> visit localhost:3000
+- It's yours. Keep it.
+
+
+
+## Resources
+
+## Practice code examples
 [Go by Examples](https://github.com/mmcgrana/gobyexample/tree/master/examples)
 
 
 ### ChatGPT integration (Coming soon)
+
 ### Github integration (Coming soon)
+
+### Web Link Generation (Coming Soon)
 
 
 ### To run and develop
