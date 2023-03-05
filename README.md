@@ -10,6 +10,9 @@
 
 
 #### Step 2. Add some notes about the code in markdown.
+
+You can also hide parts of codes or skip typing them using comments like `@hide` and `@skip.`
+
 <img src="https://user-images.githubusercontent.com/4682613/222879201-80d61cae-1c1e-40f7-b14c-54b0901a250e.gif" width="650px" alt="Showing how it works." />
 
 
