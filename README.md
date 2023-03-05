@@ -33,9 +33,44 @@ Everyone's got different learning style. So it might not help you at all, but aw
 #### Step 5. Contribute
 
 
+## Special comments
+
+#### `@hide <string to hide>`
+
+Say in this code, you want to hide `int` and `bar` for training purposes. 
+```typescript
+var foo: int = bar(boo);
+```
+
+You can do this:
+```typescript
+// @hide int
+// @hide bar
+var foo: int = bar(boo);
+```
+
+Resulting:
+```typescript
+var foo: ___ = ___(boo);
+```
+
+Note: the `@hide` will hide all the word (regx `/g`) within the same code block. Code blocks are separated by at least one line of comments including the inline ones.
 
 
-## Why Desktop apps first?
+#### `@skip`
+Sometimes you don't want to type out everything. Like this one
+```typescript
+var hash = 'f3cf2c3eca9a2c2c088e27e6a696a272';
+```
+You can use `@skip` to make it just appear during the practice
+
+```typescript
+// @skip
+var hash = 'f3cf2c3eca9a2c2c088e27e6a696a272';
+```
+
+
+## Why a desktop app?
 I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless interconnected apps. 
 
 Downloadable dApps desktop apps are:
