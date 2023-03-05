@@ -194,10 +194,8 @@ export default function parseText(rawText: string, language: string) {
           ...hiddenSelections,
           ...getHiddenSelections(line, block.text, position),
         ];
-      } else if (line.trim() === '\n') {
-        newComment += `\n`;
       } else {
-        newComment += `${line}`;
+        newComment += `${line}\n`;
       }
     });
 

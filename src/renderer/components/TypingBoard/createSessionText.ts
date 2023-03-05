@@ -1,7 +1,4 @@
-import {
-  createNewLinesFromText,
-  createNewLinesFromTextWithSpace,
-} from './createNewLine';
+import { createNewLinesFromTextWithSpace } from './createNewLine';
 
 const createSessionText = (blocks: any[]) => {
   let newSessionText = '\n'; // The first string should be a new line to skip the title
@@ -26,6 +23,8 @@ const createSessionText = (blocks: any[]) => {
       }
 
       newComment += `${line}\n`;
+
+      return false;
     });
 
     block.comment = newComment;
