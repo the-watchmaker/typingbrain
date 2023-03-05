@@ -7,11 +7,14 @@ import styled from 'styled-components';
 import useEditor from 'renderer/hooks/states/useEditor';
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { EditorSelection, EditorState } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 import Row from 'renderer/components/ui/Row';
 import Column from 'renderer/components/ui/Column';
 import useSession from 'renderer/hooks/states/useSession';
+import useWrong from 'renderer/hooks/states/useWrong';
 import usePractice from 'renderer/hooks/states/usePractice';
 import { languageList } from 'renderer/languages/language-list';
+import addUnderline from './addUnderline';
 
 import getCursorPosition from './getCursorPosition';
 import TypingBlockInfo from './TypingBlockInfo';
@@ -108,6 +111,24 @@ const AnswerWrapper = styled.div`
     .cm-layer.cm-selectionLayer {
       z-index: -2 !important;
     }
+    .cm-underline {
+      // text-decoration: underline 3px red;
+      position: relative;
+      * {
+        color: #ffffff;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background: #c70000;
+        opacity: 0.75;
+        z-index: -2;
+      }
+    }
   }
 `;
 
@@ -163,6 +184,7 @@ export default function TypingBoard() {
 
   const { savePractice, currentPractice } = usePractice();
   const { currentSession, updateCurrentSession } = useSession();
+  const { currentWrongs, updateCurrentWrongs } = useWrong();
 
   const [cursorToJumpTo, setCursorToJumpTo] = useState(0);
 
@@ -251,12 +273,29 @@ export default function TypingBoard() {
     handleGutterWidth();
   }, [lineNumber]);
 
+  const handleWrong = useCallback(() => {
+    if (!answerRefs.current?.view) {
+      return;
+    }
+    const wrongs =
+      currentWrongs.map(({ from, to }) => {
+        return { from, to };
+      }) || [];
+
+    addUnderline(answerRefs.current.view as EditorView, wrongs);
+  }, [currentWrongs]);
+
+  useEffect(() => {
+    handleWrong();
+  }, [currentWrongs]);
+
   useEffect(() => {
     const block = getCurrentBlockByLine(2);
     setCurrentBlock(block || {});
   }, [blocks, mode]);
 
   const handleOnCursorActivity = (thisRefs: any) => {
+    handleWrong();
     updateLastInteracted();
 
     if (thisRefs.current?.view) {
@@ -280,6 +319,8 @@ export default function TypingBoard() {
 
       handleGutterWidth();
     }
+
+    updateCurrentWrongs();
   };
 
   const handleEditorChange = (text: string) => {
@@ -325,6 +366,7 @@ export default function TypingBoard() {
           nextlineLength = 0;
         }
 
+        /*
         console.log(doc.text);
         console.log({
           lineText: `${lineText}`,
@@ -337,6 +379,7 @@ export default function TypingBoard() {
           nextlineLength,
           a: positionNumber + postMore + nextlineLength + 1,
         });
+        */
 
         setCursorToJumpTo(positionNumber + postMore + nextlineLength + 1);
       }

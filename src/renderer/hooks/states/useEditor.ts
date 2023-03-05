@@ -5,6 +5,15 @@ import { TMode } from 'main/models/models';
 export default function useEditorText() {
   const { state, dispatch } = useContext(globalContext);
 
+  const setEditingText = (text: string) => {
+    dispatch({
+      type: 'updateEditorEditingText',
+      payload: {
+        editingText: text,
+      },
+    });
+  };
+
   return {
     ...state.editor,
     updateLastInteracted: () => {
@@ -48,14 +57,7 @@ export default function useEditorText() {
         },
       });
     },
-    setEditingText: (text: string) => {
-      dispatch({
-        type: 'updateEditorEditingText',
-        payload: {
-          editingText: text,
-        },
-      });
-    },
+    setEditingText,
     setMode: (mode: TMode) => {
       dispatch({
         type: 'updateEditorMode',

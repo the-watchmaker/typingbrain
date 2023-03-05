@@ -1,11 +1,14 @@
 import { IPractice, IEditor, ISession, TMode } from 'main/models/models';
 import { Dispatch, createContext } from 'react';
 
+import { IWrong } from 'renderer/lib/getWrongParts';
+
 export interface IUIState {
   editor: IEditor;
   practiceList: IPractice[] | null;
   currentPractice: IPractice | null;
   currentSession: ISession;
+  currentWrongs: IWrong[];
 }
 
 export const DEFAULT_STATE = {
@@ -34,6 +37,7 @@ export const DEFAULT_STATE = {
     column: 1,
     line: 1,
   },
+  currentWrongs: [],
 };
 
 export const initialState: IUIState = {
@@ -112,6 +116,11 @@ export const reducer = (state: any, action: any) => {
           ...state.currentSession,
           ...action.payload.currentSession,
         },
+      };
+    case 'updateCurrentWrongs':
+      return {
+        ...state,
+        currentWrongs: action.payload.currentWrongs,
       };
     default:
   }
