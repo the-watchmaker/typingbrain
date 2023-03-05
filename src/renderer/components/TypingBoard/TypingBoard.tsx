@@ -353,9 +353,13 @@ export default function TypingBoard() {
       if (tr.newDoc.lines !== (hintRefs.current?.state?.doc?.lines || 0)) {
         // eslint-disable-next-line no-underscore-dangle
         const { doc } = tr.startState;
-        const lineText = doc.text[lineNumber - 1] || '';
+
+        const text =
+          doc.text || (doc.children || []).map((c: any) => c.text).flat();
+
+        const lineText = text[lineNumber - 1] || '';
         const postMore = lineText.length - (columnNumber - 1);
-        const nextline = doc.text[lineNumber];
+        const nextline = text[lineNumber];
 
         if (typeof nextline === 'undefined') {
           return false;
