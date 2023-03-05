@@ -27,6 +27,7 @@ Get feedbacks from mistakes.
 #### Step 4. Keep practicing and see if it works!
 
 Everyone's got different learning style. So it might not help you at all, but awesome if it did. It defintely help me memorize syntax and methods when I was learning Rust.
+
 ![stanley-theoffice](https://user-images.githubusercontent.com/4682613/222879328-7974e961-cc24-42c7-ba85-1d082d59a32f.gif)
 
 
