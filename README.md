@@ -76,8 +76,8 @@ I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless i
 
 Downloadable dApps desktop apps are:
 
-- Easy to run. No need to clone -> set up environment -> run it locally -> visit localhost:3000
-- It's yours. Keep it.
+- Easy to run. No need to clone -> install dependency -> set up environment -> run it locally -> visit localhost:3000
+- It's yours. Keep it. If it's on the server, it might go down one day.
 
 
 
