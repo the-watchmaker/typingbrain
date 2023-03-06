@@ -82,12 +82,14 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
             break;
           }
 
+          // TODO put these rules in language-list
           const comment = `${child.value
             .replace(/\/\/\s?/, '')
             .replace(/#\s?/, '')
             .replace(/\/*\s?/, '')
             .replace(/=begin\s?/, '')
             .replace(/"""\s?/, '')
+            .replace(/--\s?/, '')
             .trim()} \n\n`;
 
           if (
