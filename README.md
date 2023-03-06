@@ -10,10 +10,13 @@
 
 
 #### Step 2. Add some notes about the code in markdown.
+
+You can also hide parts of codes or skip typing them using comments like `@hide` and `@skip.`
+
 <img src="https://user-images.githubusercontent.com/4682613/222879201-80d61cae-1c1e-40f7-b14c-54b0901a250e.gif" width="650px" alt="Showing how it works." />
 
 
-#### Step 3. Hit "Practice" button and start typing the code while reading the note from Step 2
+#### Step 3. Hit the "Practice" button and start typing the code while reading the note
 <img src="https://user-images.githubusercontent.com/4682613/222879268-634561c6-09ec-4c3f-bbdd-69b7a3a19134.gif" width="650px" alt="Showing how it works." />
 
 <img src="https://user-images.githubusercontent.com/4682613/222945882-da196d76-ba21-4fc3-82b8-86dc007eee2c.gif" width="500px" alt="Showing how it works." />
@@ -21,24 +24,60 @@
 Get feedbacks from mistakes.
 
 
-#### Step 4. Keep practicing and see if this works!
+#### Step 4. Keep practicing and see if it works!
+
+Everyone's got different learning style. So it might not help you at all, but awesome if it did. It defintely help me memorize syntax and methods when I was learning Rust.
+
 ![stanley-theoffice](https://user-images.githubusercontent.com/4682613/222879328-7974e961-cc24-42c7-ba85-1d082d59a32f.gif)
 
 
-#### Step 5. Follow the project and give me feedbacks for new features or bugs!
-
-I will try my best to answer your questions. 
+#### Step 5. Contribute
 
 
----
+## Special comments
 
-## Why Desktop apps first?
+#### `@hide <string to hide>`
+
+Say in this code, you want to hide `int` and `bar` for training purposes. 
+```typescript
+var foo: int = bar(boo);
+```
+
+You can do this:
+```typescript
+// @hide int
+// @hide bar
+var foo: int = bar(boo);
+```
+
+Resulting:
+```typescript
+var foo: ___ = ___(boo);
+```
+
+Note: the `@hide` will hide all the word (regx `/g`) within the same code block. Code blocks are separated by at least one line of comments including the inline ones.
+
+
+#### `@skip`
+Sometimes you don't want to type out everything. Like this one
+```typescript
+var hash = 'f3cf2c3eca9a2c2c088e27e6a696a272';
+```
+You can use `@skip` to make it just appear during the practice
+
+```typescript
+// @skip
+var hash = 'f3cf2c3eca9a2c2c088e27e6a696a272';
+```
+
+
+## Why a desktop app?
 I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless interconnected apps. 
 
-Downloadable dApps desktop apps are:
+Downloadable apps are:
 
-- Easy to run. No need to clone -> set up environment -> run it locally -> visit localhost:3000
-- It's yours. Keep it.
+- Easy to run. No need to clone -> install dependency -> set up environment -> run it locally -> visit localhost:3000
+- yours. Keep it. If it's on a server, it might go down one day.
 
 
 
