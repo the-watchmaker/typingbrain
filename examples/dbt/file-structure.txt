@@ -1,0 +1,25 @@
+dbt File Structure
+my_project/
+    dbt_project.yml
+    profiles.yml
+    analysis/
+        my_analysis.sql
+        my_analysis.md
+    data/
+        raw/
+            my_data.csv
+        models/
+            my_schema/
+                my_model.sql
+            my_other_schema/
+                my_other_model.sql
+        snapshots/
+            my_snapshot.sql
+    macros/
+        my_macro.sql
+    tests/
+        my_test.sql
+    docs/
+        index.html
+        assets/
+            style.css
