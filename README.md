@@ -74,10 +74,10 @@ var hash = 'f3cf2c3eca9a2c2c088e27e6a696a272';
 ## Why a desktop app?
 I'm into desktop dApps built in electron and Tauri, true serverless/lambdaless interconnected apps. 
 
-Downloadable dApps desktop apps are:
+Downloadable apps are:
 
 - Easy to run. No need to clone -> install dependency -> set up environment -> run it locally -> visit localhost:3000
-- It's yours. Keep it. If it's on the server, it might go down one day.
+- yours. Keep it. If it's on a server, it might go down one day.
 
 
 
