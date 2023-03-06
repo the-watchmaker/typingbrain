@@ -166,9 +166,9 @@ export const languageList: { [code: string]: TLanguage } = {
     code: 'html',
     extension: StreamLanguage.define(html),
   },
-  mysql: {
-    name: 'MySQL',
-    code: 'mysql',
+  sql: {
+    name: 'SQL',
+    code: 'sql',
     extension: StreamLanguage.define(mySQL),
   },
   sass: {
