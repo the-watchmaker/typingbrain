@@ -16,7 +16,7 @@ You can also hide parts of codes or skip typing them using comments like `@hide`
 <img src="https://user-images.githubusercontent.com/4682613/222879201-80d61cae-1c1e-40f7-b14c-54b0901a250e.gif" width="650px" alt="Showing how it works." />
 
 
-#### Step 3. Hit "Practice" button and start typing the code while reading the note from Step 2
+#### Step 3. Hit the "Practice" button and start typing the code while reading the note
 <img src="https://user-images.githubusercontent.com/4682613/222879268-634561c6-09ec-4c3f-bbdd-69b7a3a19134.gif" width="650px" alt="Showing how it works." />
 
 <img src="https://user-images.githubusercontent.com/4682613/222945882-da196d76-ba21-4fc3-82b8-86dc007eee2c.gif" width="500px" alt="Showing how it works." />
