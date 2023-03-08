@@ -29,6 +29,8 @@ const parse = (input, options = {}) => {
     throw new Error(`Language "${name}" is not supported by strip-comments`);
   }
 
+  cst.language = lang;
+
   const { LINE_REGEX, BLOCK_OPEN_REGEX, BLOCK_CLOSE_REGEX } = lang;
   let block = cst;
   let remaining = input;

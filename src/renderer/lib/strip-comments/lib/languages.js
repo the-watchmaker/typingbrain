@@ -1,20 +1,23 @@
 /* eslint-disable no-multi-assign */
-exports.ada = { LINE_REGEX: /^--.*/ };
-exports.apl = { LINE_REGEX: /^⍝.*/ };
+exports.ada = { LINE_REGEX: /^--.*/, strip: [/--\s?/] };
+exports.apl = { LINE_REGEX: /^⍝.*/, strip: [/⍝\s?/] };
 
 exports.applescript = {
   BLOCK_OPEN_REGEX: /^\(\*/,
   BLOCK_CLOSE_REGEX: /^\*\)/,
+  strip: [/\(\s?/, /\s?\)/],
 };
 
 exports.csharp = {
   LINE_REGEX: /^\/\/.*/,
+  strip: [/\/\/\s?/],
 };
 
 exports.haskell = {
   BLOCK_OPEN_REGEX: /^\{-/,
   BLOCK_CLOSE_REGEX: /^-\}/,
   LINE_REGEX: /^--.*/,
+  strip: [/--\s?/, /\{-\s?/, /\s?-\}/],
 };
 
 exports.html = {
@@ -23,6 +26,7 @@ exports.html = {
   BLOCK_CLOSE_LOOSE_REGEX: /^(?<!(?:<!-))--\s*>/,
   BLOCK_CLOSE_STRICT_NEWLINE_REGEX: /^(?<!(?:<!-))-->(\s*\n+|\n*)/,
   BLOCK_CLOSE_STRICT_LOOSE_REGEX: /^(?<!(?:<!-))--\s*>(\s*\n+|\n*)/,
+  strip: [/(<!--\s?|<!--\s?|\s?-->)/],
 };
 
 exports.javascript =
@@ -33,47 +37,56 @@ exports.javascript =
       BLOCK_OPEN_REGEX: /^\/\*\*?(!?)/,
       BLOCK_CLOSE_REGEX: /^\*\/(\n?)/,
       LINE_REGEX: /^\/\/(!?).*/,
+      strip: [/\/\*\s?/, /\s?\*\/\s?/, /\/\/\s?/],
     };
 
 exports.lua = {
   BLOCK_OPEN_REGEX: /^--\[\[/,
   BLOCK_CLOSE_REGEX: /^\]\]/,
   LINE_REGEX: /^--.*/,
+  strip: [/--\s?\[\[/, /\s?\]\]/, /--\s?/],
 };
 
 exports.matlab = {
   BLOCK_OPEN_REGEX: /^%{/,
   BLOCK_CLOSE_REGEX: /^%}/,
   LINE_REGEX: /^%.*/,
+  strip: [/%\s?\{\s?/, /\s?\}\s?/, /%\s?/],
 };
 
 exports.perl = {
   LINE_REGEX: /^#.*/,
+  strip: [/#\s?/],
 };
 
 exports.php = {
   ...exports.javascript,
   LINE_REGEX: /^(#|\/\/).*?(?=\?>|\n)/,
+  strip: [/\/\*\s?/, /\s?\*\/\s?/, /\/\/\s?/],
 };
 
 exports.python = {
   BLOCK_OPEN_REGEX: /^"""/,
   BLOCK_CLOSE_REGEX: /^"""/,
   LINE_REGEX: /^#.*/,
+  strip: [/"""\s?/, /\s?"""/, /#\s?/],
 };
 
 exports.ruby = {
   BLOCK_OPEN_REGEX: /^=begin/,
   BLOCK_CLOSE_REGEX: /^=end/,
   LINE_REGEX: /^#.*/,
+  strip: [/=\s?begin\s?/, /\s?end\s?/, /#\s?/],
 };
 
 exports.shell = {
   LINE_REGEX: /^#.*/,
+  strip: [/#\s?/],
 };
 
 exports.shebang = exports.hashbang = {
   LINE_REGEX: /^#!.*/,
+  strip: [/#\s?/],
 };
 
 exports.c = exports.javascript;

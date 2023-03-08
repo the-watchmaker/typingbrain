@@ -12,9 +12,15 @@ const DEFAULT_BLOCK = {
   lineFrom: 1,
 };
 
-function walk(node: any, currentBlock: any, inBlock: boolean = false) {
+function walk(
+  node: any,
+  currentBlock: any,
+  lang: any,
+  inBlock: boolean = false
+) {
   const blocks: any[] = [];
   const commentLines: number[] = [];
+
 
   let line = 1;
   // TODO: Create interface
@@ -76,21 +82,28 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
         case 'block':
         case 'line':
           if (child.type === 'block' && child.nodes?.length > 0) {
-            const [blockInBlock] = walk(child, currentBlock, true);
+            if (currentBlock.previousType === 'text') {
+              blocks.push(currentBlock);
+              currentBlock = {
+                ...DEFAULT_BLOCK,
+                comment: '',
+                lineFrom: line,
+                createdAt: 'LB',
+              };
+            }
+
+            const [blockInBlock] = walk(child, currentBlock, lang, true);
             currentBlock.comment = blockInBlock.comment;
             currentBlock.previousType = 'line';
             break;
           }
 
-          // TODO put these rules in language-list
-          const comment = `${child.value
-            .replace(/\/\/\s?/, '')
-            .replace(/#\s?/, '')
-            .replace(/\/*\s?/, '')
-            .replace(/=begin\s?/, '')
-            .replace(/"""\s?/, '')
-            .replace(/--\s?/, '')
-            .trim()} \n\n`;
+          // remove the comment header from comments
+          const removed = lang.strip.reduce((val: string, regex: RegExp) => {
+            return val.replace(regex as RegExp, '');
+          }, child.value);
+
+          const comment = `${removed.trim()} \n\n`;
 
           if (
             currentBlock.previousType === 'text' &&
@@ -153,6 +166,8 @@ function walk(node: any, currentBlock: any, inBlock: boolean = false) {
   currentBlock.lineTo = line;
   blocks.push(currentBlock);
 
+  console.log(blocks);
+
   return blocks;
 }
 
@@ -173,7 +188,7 @@ function getHiddenSelections(line: any, blockText: string, pos: number) {
 export default function parseText(rawText: string, language: string) {
   const { nodes } = strip.detail(rawText, { language });
 
-  const blocks = walk(nodes, { ...DEFAULT_BLOCK }, false);
+  const blocks = walk(nodes, { ...DEFAULT_BLOCK }, nodes.language, false);
 
   // TODO refactor
   //
@@ -205,6 +220,8 @@ export default function parseText(rawText: string, language: string) {
 
     position += blockText.length;
   });
+
+  console.log(nodes);
 
   return {
     text,
